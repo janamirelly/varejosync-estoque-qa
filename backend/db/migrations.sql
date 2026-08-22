@@ -57,7 +57,9 @@ SELECT
   estoque_min,
   status
 FROM vw_estoque_detalhado
-WHERE status IN ('ESGOTADO', 'CRITICO', 'ATENCAO')
+WHERE produto_ativo = 1
+  AND variacao_ativa = 1
+  AND status IN ('ESGOTADO', 'CRITICO', 'ATENCAO')
 ORDER BY
   CASE status
     WHEN 'ESGOTADO' THEN 1

@@ -19,6 +19,7 @@ const motivosPorTipo = {
 
 let produtos = [];
 let movimentacoes = [];
+let dashboardDados = null;
 let produtoSelecionado = null;
 let produtoEmEdicao = null;
 let movimentacaoConcluida = false;
@@ -47,7 +48,7 @@ const conteudoTopbarPorPagina = {
   },
   alertas: {
     titulo: "Alertas",
-    subtitulo: "Acompanhamento de itens críticos e esgotados",
+    subtitulo: "Acompanhamento de itens em atenção, críticos e esgotados",
   },
 };
 
@@ -57,6 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   inicializarMovimentacao();
   inicializarModalResultado();
   inicializarFiltrosHistorico();
+  inicializarAtualizacaoHistorico();
   inicializarCadastroProduto();
   inicializarDatePickers();
 
@@ -81,6 +83,14 @@ async function carregarDadosIniciais() {
     produtos = estoqueApi.map(mapearProdutoApi);
     movimentacoes = movimentacoesApi.map(mapearMovimentacaoApi);
 
+    try {
+      dashboardDados = await buscarDashboardApi();
+    } catch (erroDashboard) {
+      console.error("[FRONT] erro ao carregar dashboard:", erroDashboard);
+
+      dashboardDados = null;
+    }
+
     preencherFiltrosAlertas();
     iniciarFiltrosAlertas();
     renderizarTudo();
@@ -91,6 +101,7 @@ async function carregarDadosIniciais() {
 
     produtos = [];
     movimentacoes = [];
+    dashboardDados = null;
 
     renderizarTudo();
     atualizarStatusApi("offline");
@@ -156,6 +167,17 @@ async function buscarMovimentacoesApi() {
   return dados;
 }
 
+async function buscarDashboardApi() {
+  const resposta = await fetch(`${API_BASE_URL}/dashboard`);
+  const dados = await resposta.json();
+
+  if (!resposta.ok) {
+    throw new Error(dados.erro || dados.message || "Erro ao buscar dashboard.");
+  }
+
+  return dados;
+}
+
 async function registrarMovimentacaoApi(payload) {
   const resposta = await fetch(`${API_BASE_URL}/estoque/movimentacoes`, {
     method: "POST",
@@ -168,7 +190,9 @@ async function registrarMovimentacaoApi(payload) {
   const dados = await resposta.json();
 
   if (!resposta.ok) {
-    throw new Error(dados.message || "Erro ao registrar movimentação.");
+    throw new Error(
+      dados.erro || dados.message || "Erro ao registrar movimentação.",
+    );
   }
 
   return dados;
@@ -329,31 +353,33 @@ function atualizarStatusApi(status) {
 ========================= */
 
 function obterStatusProduto(produto) {
-  if (produto.quantidade === 0) {
-    return {
+  const status = String(produto.statusApi || "").toUpperCase();
+
+  const statusPorTipo = {
+    ESGOTADO: {
       texto: "Esgotado",
       classe: "status-out",
-    };
-  }
-
-  if (produto.quantidade < produto.estoqueMinimo) {
-    return {
+    },
+    CRITICO: {
       texto: "Crítico",
       classe: "status-critical",
-    };
-  }
-
-  if (produto.quantidade === produto.estoqueMinimo) {
-    return {
+    },
+    ATENCAO: {
       texto: "Atenção",
       classe: "status-warning",
-    };
-  }
-
-  return {
-    texto: "Disponível",
-    classe: "status-ok",
+    },
+    DISPONIVEL: {
+      texto: "Disponível",
+      classe: "status-ok",
+    },
   };
+
+  return (
+    statusPorTipo[status] || {
+      texto: "Indefinido",
+      classe: "status-warning",
+    }
+  );
 }
 
 function renderizarDashboard() {
@@ -371,40 +397,36 @@ function renderizarDashboard() {
   );
   const btnVerHistorico = document.getElementById("btnVerHistorico");
 
-  const criticos = produtos.filter(
-    (produto) =>
-      produto.quantidade > 0 && produto.quantidade < produto.estoqueMinimo,
-  );
+  const cards = dashboardDados?.cards;
+  const movimentacoesHoje = dashboardDados?.movimentacoes_hoje;
 
-  const esgotados = produtos.filter((produto) => produto.quantidade === 0);
-
-  const movimentacoesHoje = movimentacoes.filter((movimentacao) =>
-    movimentacaoEhDeHoje(movimentacao.data),
-  );
-
-  const entradasHoje = movimentacoesHoje.filter(
-    (movimentacao) => movimentacao.tipo === "ENTRADA",
-  );
-
-  const saidasHoje = movimentacoesHoje.filter(
-    (movimentacao) => movimentacao.tipo === "SAIDA",
-  );
-
-  const ajustesHoje = movimentacoesHoje.filter(
-    (movimentacao) => movimentacao.tipo === "AJUSTE",
-  );
-
-  if (totalProdutos) totalProdutos.textContent = produtos.length;
-  if (totalCriticos) totalCriticos.textContent = criticos.length;
-  if (totalEsgotados) totalEsgotados.textContent = esgotados.length;
-
-  if (totalMovimentacoesHoje) {
-    totalMovimentacoesHoje.textContent = movimentacoesHoje.length;
+  if (totalProdutos) {
+    totalProdutos.textContent = cards?.total_variacoes ?? "—";
   }
 
-  if (totalEntradasHoje) totalEntradasHoje.textContent = entradasHoje.length;
-  if (totalSaidasHoje) totalSaidasHoje.textContent = saidasHoje.length;
-  if (totalAjustesHoje) totalAjustesHoje.textContent = ajustesHoje.length;
+  if (totalCriticos) {
+    totalCriticos.textContent = cards?.itens_criticos ?? "—";
+  }
+
+  if (totalEsgotados) {
+    totalEsgotados.textContent = cards?.itens_esgotados ?? "—";
+  }
+
+  if (totalMovimentacoesHoje) {
+    totalMovimentacoesHoje.textContent = movimentacoesHoje?.total ?? "—";
+  }
+
+  if (totalEntradasHoje) {
+    totalEntradasHoje.textContent = movimentacoesHoje?.entradas ?? "—";
+  }
+
+  if (totalSaidasHoje) {
+    totalSaidasHoje.textContent = movimentacoesHoje?.saidas ?? "—";
+  }
+
+  if (totalAjustesHoje) {
+    totalAjustesHoje.textContent = movimentacoesHoje?.ajustes ?? "—";
+  }
 
   if (btnVerHistorico) {
     btnVerHistorico.onclick = () => {
@@ -414,7 +436,11 @@ function renderizarDashboard() {
 
   if (!dashboardMovimentacoes) return;
 
-  const ultimasMovimentacoes = movimentacoes.slice(0, 5);
+  const ultimasMovimentacoes = Array.isArray(
+    dashboardDados?.ultimas_movimentacoes,
+  )
+    ? dashboardDados.ultimas_movimentacoes.map(mapearMovimentacaoApi)
+    : movimentacoes.slice(0, 5);
 
   if (ultimasMovimentacoes.length === 0) {
     dashboardMovimentacoes.innerHTML = `
@@ -574,26 +600,6 @@ function preencherFormularioEdicaoProduto(produto) {
 
 function renderizarHistorico() {
   const historicoTabela = document.getElementById("historicoTabela");
-  const btnAtualizarHistorico = document.getElementById(
-    "btnAtualizarHistorico",
-  );
-
-  if (btnAtualizarHistorico) {
-    btnAtualizarHistorico.onclick = async () => {
-      try {
-        const movimentacoesApi = await buscarMovimentacoesApi();
-        movimentacoes = movimentacoesApi.map(mapearMovimentacaoApi);
-
-        renderizarHistorico();
-        renderizarDashboard();
-
-        exibirFeedback("Histórico atualizado com sucesso.", "success");
-      } catch (erro) {
-        console.error("[FRONT] erro ao atualizar histórico:", erro);
-        exibirFeedback("Erro ao atualizar histórico.", "error");
-      }
-    };
-  }
 
   if (!historicoTabela) return;
 
@@ -724,6 +730,30 @@ function inicializarFiltrosHistorico() {
   }
 }
 
+function inicializarAtualizacaoHistorico() {
+  const btnAtualizarHistorico = document.getElementById(
+    "btnAtualizarHistorico",
+  );
+
+  if (!btnAtualizarHistorico) return;
+
+  btnAtualizarHistorico.addEventListener("click", async () => {
+    try {
+      const movimentacoesApi = await buscarMovimentacoesApi();
+
+      movimentacoes = movimentacoesApi.map(mapearMovimentacaoApi);
+
+      renderizarHistorico();
+
+      exibirFeedback("Histórico atualizado com sucesso.", "success");
+    } catch (erro) {
+      console.error("[FRONT] erro ao atualizar histórico:", erro);
+
+      exibirFeedback("Erro ao atualizar histórico.", "error");
+    }
+  });
+}
+
 function normalizarTexto(valor) {
   return String(valor || "")
     .trim()
@@ -754,24 +784,8 @@ function corVariacaoValida(cor) {
 }
 
 function obterStatusFiltroProduto(produto) {
-  const quantidade = Number(produto.quantidade);
-  const estoqueMinimo = Number(produto.estoqueMinimo);
-
-  if (quantidade === 0) {
-    return "ESGOTADO";
-  }
-
-  if (quantidade > 0 && quantidade < estoqueMinimo) {
-    return "CRITICO";
-  }
-
-  if (quantidade === estoqueMinimo) {
-    return "ATENCAO";
-  }
-
-  return "NORMAL";
+  return String(produto.statusApi || "").toUpperCase();
 }
-
 function obterProdutosComAlerta() {
   return produtos.filter((produto) => {
     const status = obterStatusFiltroProduto(produto);
@@ -830,10 +844,6 @@ function preencherFiltrosAlertas() {
   `;
 }
 
-preencherFiltrosAlertas();
-iniciarFiltrosAlertas();
-renderizarAlertas();
-
 function filtrarAlertas(produtosComAlerta) {
   const busca = normalizarTexto(document.getElementById("alertaBusca")?.value);
   const statusSelecionado =
@@ -890,7 +900,7 @@ function renderizarAlertas() {
 
   if (produtosComAlerta.length === 0) {
     alertasLista.innerHTML = `
-      <div class="empty-state">Nenhum produto em situação de alerta.</div>
+      <div class="empty-state">Nenhuma variação em situação de alerta.</div>
     `;
     return;
   }
@@ -1687,11 +1697,21 @@ async function confirmarMovimentacao() {
   try {
     const resposta = await registrarMovimentacaoApi(payload);
 
-    atualizarProdutoAposResposta(resposta);
-    registrarMovimentacaoNoHistorico(resposta);
+    try {
+      await sincronizarDadosAposMovimentacao(resposta);
+    } catch (erroSincronizacao) {
+      console.error(
+        "[FRONT] movimentação registrada, mas houve erro ao sincronizar a tela:",
+        erroSincronizacao,
+      );
 
-    renderizarTudo();
-    renderizarProdutoSelecionado();
+      atualizarProdutoAposResposta(resposta);
+      registrarMovimentacaoNoHistorico(resposta);
+
+      renderizarTudo();
+      renderizarProdutoSelecionado();
+    }
+
     atualizarResumoComEstoqueAtual(resposta.estoque.atual);
 
     movimentacaoConcluida = true;
@@ -1833,6 +1853,64 @@ function registrarMovimentacaoNoHistorico(resposta) {
   });
 }
 
+async function sincronizarDadosAposMovimentacao(resposta) {
+  const idVariacaoSelecionada = produtoSelecionado?.idVariacao;
+
+  const [estoqueResultado, movimentacoesResultado, dashboardResultado] =
+    await Promise.allSettled([
+      buscarEstoqueApi(),
+      buscarMovimentacoesApi(),
+      buscarDashboardApi(),
+    ]);
+
+  if (estoqueResultado.status === "fulfilled") {
+    produtos = estoqueResultado.value.map(mapearProdutoApi);
+    preencherFiltrosAlertas();
+  } else {
+    console.error(
+      "[FRONT] erro ao sincronizar estoque após movimentação:",
+      estoqueResultado.reason,
+    );
+
+    atualizarProdutoAposResposta(resposta);
+  }
+
+  if (movimentacoesResultado.status === "fulfilled") {
+    movimentacoes = movimentacoesResultado.value.map(mapearMovimentacaoApi);
+  } else {
+    console.error(
+      "[FRONT] erro ao sincronizar movimentações:",
+      movimentacoesResultado.reason,
+    );
+
+    registrarMovimentacaoNoHistorico(resposta);
+  }
+
+  if (dashboardResultado.status === "fulfilled") {
+    dashboardDados = dashboardResultado.value;
+  } else {
+    console.error(
+      "[FRONT] erro ao sincronizar dashboard:",
+      dashboardResultado.reason,
+    );
+
+    dashboardDados = null;
+  }
+
+  if (idVariacaoSelecionada) {
+    const produtoAtualizado = produtos.find(
+      (produto) => produto.idVariacao === idVariacaoSelecionada,
+    );
+
+    if (produtoAtualizado) {
+      produtoSelecionado = produtoAtualizado;
+    }
+  }
+
+  renderizarTudo();
+  renderizarProdutoSelecionado();
+}
+
 function atualizarResumoComEstoqueAtual(estoqueAtual) {
   const resumoNovoEstoque = document.getElementById("resumoNovoEstoque");
 
@@ -1966,17 +2044,4 @@ function formatarDataHoraParaTela(dataHora) {
   if (!ano || !mes || !dia) return dataHora;
 
   return `${dia}/${mes}/${ano} ${hora.slice(0, 5)}`;
-}
-
-function movimentacaoEhDeHoje(dataMovimentacao) {
-  if (!dataMovimentacao) return false;
-
-  const hoje = new Date();
-  const dia = String(hoje.getDate()).padStart(2, "0");
-  const mes = String(hoje.getMonth() + 1).padStart(2, "0");
-  const ano = hoje.getFullYear();
-
-  const dataHojeBR = `${dia}/${mes}/${ano}`;
-
-  return String(dataMovimentacao).startsWith(dataHojeBR);
 }

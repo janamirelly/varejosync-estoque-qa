@@ -43,6 +43,7 @@ async function listarMovimentacoes(req, res) {
         id_produto,
         produto
       FROM vw_movimentacao_detalhada
+      ORDER BY criado_em DESC, id_movimentacao DESC
       LIMIT 100
     `);
 
@@ -63,7 +64,9 @@ async function registrarMovimentacao(req, res) {
       .trim()
       .toUpperCase();
     const quantidade = Number(req.body.quantidade);
-    const observacao = String(req.body.observacao || "").trim();
+    const observacao = String(
+      req.body.observacao ?? req.body.motivo ?? "",
+    ).trim();
 
     if (!Number.isInteger(idVariacao) || idVariacao <= 0) {
       return res.status(400).json({
@@ -176,14 +179,49 @@ async function registrarMovimentacao(req, res) {
 
       await run("COMMIT");
 
+      const movimentacaoCriada = await get(
+        `
+    SELECT
+      id_movimentacao,
+      criado_em,
+      tipo,
+      quantidade,
+      observacao,
+      id_variacao,
+      sku,
+      cor,
+      tamanho,
+      id_produto,
+      produto
+    FROM vw_movimentacao_detalhada
+    WHERE id_movimentacao = ?
+  `,
+        [result.lastID],
+      );
+
       return res.status(201).json({
-        id_movimentacao: result.lastID,
-        id_variacao: idVariacao,
-        tipo,
-        quantidade,
-        quantidade_anterior: estoqueAtual.quantidade,
-        quantidade_atual: novaQuantidade,
-        observacao: observacao || null,
+        message: "Movimentação registrada com sucesso.",
+
+        produto: {
+          id_produto: movimentacaoCriada.id_produto,
+          id_variacao: movimentacaoCriada.id_variacao,
+          nome: movimentacaoCriada.produto,
+          sku: movimentacaoCriada.sku,
+          variacao: `${movimentacaoCriada.cor} / ${movimentacaoCriada.tamanho}`,
+        },
+
+        movimentacao: {
+          id_movimentacao: movimentacaoCriada.id_movimentacao,
+          tipo: movimentacaoCriada.tipo,
+          quantidade: Number(movimentacaoCriada.quantidade),
+          motivo: movimentacaoCriada.observacao,
+          data: movimentacaoCriada.criado_em,
+        },
+
+        estoque: {
+          anterior: Number(estoqueAtual.quantidade),
+          atual: Number(novaQuantidade),
+        },
       });
     } catch (transactionError) {
       await run("ROLLBACK");

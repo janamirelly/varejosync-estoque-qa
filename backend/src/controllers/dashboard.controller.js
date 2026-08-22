@@ -27,23 +27,53 @@ async function obterDashboard(req, res) {
           COUNT(DISTINCT id_variacao) AS total_variacoes,
           COALESCE(SUM(quantidade), 0) AS estoque_total,
 
-          SUM(CASE WHEN status = 'DISPONIVEL' THEN 1 ELSE 0 END) AS itens_disponiveis,
-          SUM(CASE WHEN status = 'ATENCAO' THEN 1 ELSE 0 END) AS itens_atencao,
-          SUM(CASE WHEN status = 'CRITICO' THEN 1 ELSE 0 END) AS itens_criticos,
-          SUM(CASE WHEN status = 'ESGOTADO' THEN 1 ELSE 0 END) AS itens_esgotados,
+          COALESCE(
+            SUM(CASE WHEN status = 'DISPONIVEL' THEN 1 ELSE 0 END),
+            0
+          ) AS itens_disponiveis,
+
+          COALESCE(
+            SUM(CASE WHEN status = 'ATENCAO' THEN 1 ELSE 0 END),
+            0
+          ) AS itens_atencao,
+
+          COALESCE(
+            SUM(CASE WHEN status = 'CRITICO' THEN 1 ELSE 0 END),
+            0
+          ) AS itens_criticos,
+
+          COALESCE(
+            SUM(CASE WHEN status = 'ESGOTADO' THEN 1 ELSE 0 END),
+            0
+          ) AS itens_esgotados,
 
           MAX(atualizado_em) AS ultima_atualizacao
+
         FROM vw_estoque_detalhado
+
+        WHERE produto_ativo = 1
+          AND variacao_ativa = 1
       `)) || {};
 
     const estoquePorProduto = await all(`
       SELECT
         id_produto,
         produto,
-        total_variacoes,
-        quantidade_total
-      FROM vw_dashboard_estoque_por_produto
-      ORDER BY produto
+        COUNT(DISTINCT id_variacao) AS total_variacoes,
+        COALESCE(SUM(quantidade), 0) AS quantidade_total
+
+      FROM vw_estoque_detalhado
+
+      WHERE produto_ativo = 1
+        AND variacao_ativa = 1
+
+      GROUP BY
+        id_produto,
+        produto
+
+      ORDER BY
+        produto,
+        id_produto
     `);
 
     const ultimasMovimentacoes = await all(`
@@ -59,9 +89,40 @@ async function obterDashboard(req, res) {
         tamanho,
         id_produto,
         produto
+
       FROM vw_movimentacao_detalhada
+
+      ORDER BY
+        datetime(criado_em) DESC,
+        id_movimentacao DESC
+
       LIMIT 5
     `);
+
+    const movimentacoesHoje =
+      (await get(`
+        SELECT
+          COUNT(*) AS total,
+
+          COALESCE(
+            SUM(CASE WHEN tipo = 'ENTRADA' THEN 1 ELSE 0 END),
+            0
+          ) AS entradas,
+
+          COALESCE(
+            SUM(CASE WHEN tipo = 'SAIDA' THEN 1 ELSE 0 END),
+            0
+          ) AS saidas,
+
+          COALESCE(
+            SUM(CASE WHEN tipo = 'AJUSTE' THEN 1 ELSE 0 END),
+            0
+          ) AS ajustes
+
+        FROM vw_movimentacao_detalhada
+
+        WHERE DATE(criado_em) = DATE('now', 'localtime')
+      `)) || {};
 
     return res.json({
       cards: {
@@ -74,7 +135,16 @@ async function obterDashboard(req, res) {
         itens_esgotados: Number(cards.itens_esgotados || 0),
         ultima_atualizacao: cards.ultima_atualizacao || null,
       },
+
+      movimentacoes_hoje: {
+        total: Number(movimentacoesHoje.total || 0),
+        entradas: Number(movimentacoesHoje.entradas || 0),
+        saidas: Number(movimentacoesHoje.saidas || 0),
+        ajustes: Number(movimentacoesHoje.ajustes || 0),
+      },
+
       estoque_por_produto: estoquePorProduto,
+
       ultimas_movimentacoes: ultimasMovimentacoes,
     });
   } catch (error) {
