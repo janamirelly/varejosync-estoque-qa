@@ -759,6 +759,32 @@ async function deletarProduto(req, res) {
 
       await run(
         `
+    UPDATE produto
+    SET ativo = 0
+    WHERE id_produto = ?
+      AND NOT EXISTS (
+        SELECT 1
+        FROM variacao_produto vp
+        WHERE vp.id_produto = produto.id_produto
+          AND vp.ativo = 1
+      )
+  `,
+        [variacaoEncontrada.id_produto],
+      );
+
+      const produtoAposExclusao = await all(
+        `
+    SELECT ativo
+    FROM produto
+    WHERE id_produto = ?
+  `,
+        [variacaoEncontrada.id_produto],
+      );
+
+      const produtoAtivoFinal = Number(produtoAposExclusao[0].ativo);
+
+      await run(
+        `
           INSERT INTO auditoria (
             acao,
             recurso,
@@ -778,6 +804,7 @@ async function deletarProduto(req, res) {
             sku: variacaoEncontrada.sku,
             quantidade: variacaoEncontrada.quantidade,
             estoque_min: variacaoEncontrada.estoque_min,
+            produto_ativo_apos_exclusao: produtoAtivoFinal,
           }),
         ],
       );
@@ -789,7 +816,7 @@ async function deletarProduto(req, res) {
         produto: {
           id_produto: variacaoEncontrada.id_produto,
           nome: variacaoEncontrada.nome,
-          ativo: Number(variacaoEncontrada.produto_ativo),
+          ativo: produtoAtivoFinal,
         },
         variacao: {
           id_variacao: idVariacao,
