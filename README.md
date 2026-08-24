@@ -136,7 +136,7 @@ Essa abordagem é utilizada principalmente nos cenários de persistência, ediç
 | `CT-EST-NAV-001` | Validar tela inicial do estoque | Passou |
 | `CT-EST-NAV-002` | Acessar cadastro pelo menu | Passou |
 
-[Ver código da automação](./selenium-tests/testes-estoque-qa-lab)
+[Ver código da automação](./selenium-tests/testes-varejosync-estoque-qa)
 
 ---
 
