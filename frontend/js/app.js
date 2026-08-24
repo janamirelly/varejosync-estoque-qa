@@ -1005,6 +1005,7 @@ function atualizarModoFormularioProduto(modo) {
     ".product-create-card .table-header p",
   );
   const btnCadastrarProduto = document.getElementById("btnCadastrarProduto");
+  const produtoQuantidade = document.getElementById("produtoQuantidade");
 
   if (modo === "edicao") {
     if (tituloFormulario) {
@@ -1018,6 +1019,12 @@ function atualizarModoFormularioProduto(modo) {
 
     if (btnCadastrarProduto) {
       btnCadastrarProduto.textContent = "Salvar alterações";
+    }
+
+    if (produtoQuantidade) {
+      produtoQuantidade.disabled = true;
+      produtoQuantidade.title =
+        "O saldo deve ser alterado exclusivamente pela tela de Movimentações.";
     }
 
     return;
@@ -1128,6 +1135,8 @@ async function editarProduto() {
   }
 
   const payload = montarPayloadProduto();
+  
+  delete payload.quantidade;
 
   setBotaoCadastrarProdutoCarregando(true);
 

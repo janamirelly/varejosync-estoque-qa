@@ -393,7 +393,14 @@ async function editarProduto(req, res) {
 
   const preco = Number(precoTexto);
 
-  const quantidade = Number(req.body.quantidade || 0);
+  const quantidadeFoiInformada = Object.prototype.hasOwnProperty.call(
+    req.body,
+    "quantidade",
+  );
+
+  const quantidadeInformada = quantidadeFoiInformada
+    ? Number(req.body.quantidade)
+    : null;
 
   const estoqueMinRaw = req.body.estoque_min;
 
@@ -486,10 +493,21 @@ async function editarProduto(req, res) {
       });
     }
 
-    if (!Number.isInteger(quantidade) || quantidade < 0) {
+    const quantidadeAtual = Number(produtoEncontrado.quantidade);
+
+    if (
+      quantidadeFoiInformada &&
+      (!Number.isInteger(quantidadeInformada) || quantidadeInformada < 0)
+    ) {
       return res.status(400).json({
+        message: "Quantidade de estoque inválida.",
+      });
+    }
+
+    if (quantidadeFoiInformada && quantidadeInformada !== quantidadeAtual) {
+      return res.status(409).json({
         message:
-          "Quantidade inicial deve ser um número inteiro maior ou igual a zero.",
+          "O saldo de estoque não pode ser alterado pela edição. Use a tela de Movimentações.",
       });
     }
 
@@ -580,14 +598,13 @@ async function editarProduto(req, res) {
 
       await run(
         `
-          UPDATE estoque
-          SET
-            quantidade = ?,
-            estoque_min = ?,
-            atualizado_em = datetime('now','localtime')
-          WHERE id_variacao = ?
-        `,
-        [quantidade, estoqueMin, idVariacao],
+       UPDATE estoque
+       SET
+      estoque_min = ?,
+      atualizado_em = datetime('now','localtime')
+    WHERE id_variacao = ?
+  `,
+        [estoqueMin, idVariacao],
       );
 
       await run(
@@ -620,7 +637,7 @@ async function editarProduto(req, res) {
               tamanho,
               sku,
               preco,
-              quantidade,
+              quantidade: quantidadeAtual,
               estoque_min: estoqueMin,
             },
           }),
@@ -645,7 +662,7 @@ async function editarProduto(req, res) {
           ativo: 1,
         },
         estoque: {
-          quantidade,
+          quantidade: quantidadeAtual,
           estoque_min: estoqueMin,
         },
       });
@@ -803,9 +820,11 @@ async function excluirProdutosEmMassa(req, res) {
       });
     }
 
-    const idsValidos = idsVariacao
-      .map(Number)
-      .filter((id) => Number.isInteger(id) && id > 0);
+    const idsValidos = [
+      ...new Set(
+        idsVariacao.map(Number).filter((id) => Number.isInteger(id) && id > 0),
+      ),
+    ];
 
     if (idsValidos.length === 0) {
       return res.status(400).json({
@@ -815,42 +834,63 @@ async function excluirProdutosEmMassa(req, res) {
 
     const placeholders = idsValidos.map(() => "?").join(",");
 
-    const produtosEncontrados = await all(
+    const variacoesEncontradas = await all(
       `
         SELECT
           p.id_produto,
           p.nome,
           vp.id_variacao,
-          vp.sku
+          vp.sku,
+          vp.ativo AS variacao_ativa
         FROM variacao_produto vp
         INNER JOIN produto p
           ON p.id_produto = vp.id_produto
         WHERE vp.id_variacao IN (${placeholders})
-          AND p.ativo = 1
+          AND vp.ativo = 1
       `,
       idsValidos,
     );
 
-    if (produtosEncontrados.length === 0) {
+    if (variacoesEncontradas.length === 0) {
       return res.status(404).json({
-        message: "Nenhum produto ativo encontrado para exclusão.",
+        message: "Nenhuma variação ativa encontrada para exclusão.",
       });
     }
 
-    const idsProdutos = produtosEncontrados.map(
-      (produto) => produto.id_produto,
-    );
+    const idsProdutos = [
+      ...new Set(variacoesEncontradas.map((item) => item.id_produto)),
+    ];
 
     const placeholdersProdutos = idsProdutos.map(() => "?").join(",");
 
     await run("BEGIN TRANSACTION");
 
     try {
+      const resultadoVariacoes = await run(
+        `
+          UPDATE variacao_produto
+          SET ativo = 0
+          WHERE id_variacao IN (${placeholders})
+            AND ativo = 1
+        `,
+        idsValidos,
+      );
+
+      /*
+       * Produto pai só fica inativo quando não possuir
+       * nenhuma outra variação ativa.
+       */
       await run(
         `
           UPDATE produto
           SET ativo = 0
           WHERE id_produto IN (${placeholdersProdutos})
+            AND NOT EXISTS (
+              SELECT 1
+              FROM variacao_produto vp
+              WHERE vp.id_produto = produto.id_produto
+                AND vp.ativo = 1
+            )
         `,
         idsProdutos,
       );
@@ -865,11 +905,11 @@ async function excluirProdutosEmMassa(req, res) {
           VALUES (?, ?, ?)
         `,
         [
-          "PRODUTOS_EXCLUIDOS_EM_MASSA",
-          "produto",
+          "VARIACOES_INATIVADAS_EM_MASSA",
+          "variacao_produto",
           JSON.stringify({
-            total: produtosEncontrados.length,
-            produtos: produtosEncontrados,
+            total: resultadoVariacoes.changes,
+            variacoes: variacoesEncontradas,
           }),
         ],
       );
@@ -877,19 +917,19 @@ async function excluirProdutosEmMassa(req, res) {
       await run("COMMIT");
 
       return res.json({
-        message: "Produtos excluídos com sucesso.",
-        total: produtosEncontrados.length,
-        produtos: produtosEncontrados,
+        message: "Variações excluídas com sucesso.",
+        total: resultadoVariacoes.changes,
+        variacoes: variacoesEncontradas,
       });
     } catch (error) {
       await run("ROLLBACK");
       throw error;
     }
   } catch (error) {
-    console.error("[PRODUTOS] erro ao excluir em massa:", error);
+    console.error("[VARIACOES] erro ao excluir em massa:", error);
 
     return res.status(500).json({
-      message: "Erro ao excluir produtos em massa.",
+      message: "Erro ao excluir variações em massa.",
     });
   }
 }
