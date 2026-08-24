@@ -63,6 +63,7 @@ O comportamento diverge da RN-013 e do CA-013, segundo os quais somente a varia�
 10. Consultar no banco o estado do produto `id_produto = 217`.
 11. Consultar no banco o estado da variação `BLU-PRETA-M`.
 12. Consultar no banco o estado da variação `BLU-PRETA-P`.
+13. Comparar o estado do produto e das duas variações após a operação.
 
 ## Resultado esperado
 
