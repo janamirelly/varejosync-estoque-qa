@@ -20,7 +20,7 @@ A estratégia de testes utiliza rastreabilidade entre:
 | [Caso de teste — Inativação de variação](./docs/casos-de-teste/inativacao-variacao/CT-EST-EXC-001-inativar-variacao.md) | Inativação lógica individual e reteste de defeito |
 | [BUG-001 — Vínculo incorreto entre produto e variações](./docs/bugs/bug-001-variacoes-mesmo-produto-ids-distintos.md) | Investigação do relacionamento de dados |
 | [BUG-002 — Inativação indevida do produto](./docs/bugs/bug-002-inativacao-variacao-inativa-produto.md) | Defeito investigado, corrigido e retestado |
-| [Automação — Java, Selenium e JUnit](./selenium-tests/testes-varejosync-estoque-qa-) | Testes automatizados de interface e validação em banco |
+| [Automação — Java, Selenium e JUnit](./selenium-tests/testes-varejosync-estoque-qa) | Testes automatizados de interface e validação em banco |
 
 ---
 
