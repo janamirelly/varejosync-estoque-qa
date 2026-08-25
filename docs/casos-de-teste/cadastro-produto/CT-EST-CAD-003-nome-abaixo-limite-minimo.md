@@ -61,13 +61,13 @@ Verificar se o sistema impede o cadastro de um produto quando o campo **Nome do 
 ## Evidências
 
 * **EVD-CT-EST-CAD-003-01 — Pré-condição:** consulta no banco antes da execução, confirmando que o SKU `CAM-VO-P` não estava cadastrado.
-  [Ver evidência](../../evidencias/ct-est-cad-003/01-pre-condicao-banco.png)
+  [Ver evidência](../../evidencias/EV-EST-CAD-003/01-pre-condicao-banco.png)
 
 * **EVD-CT-EST-CAD-003-02 — Massa de teste:** formulário preenchido com os dados utilizados na execução.
-  [Ver evidência](../../evidencias/ct-est-cad-003/02-massa-teste-ui.png)
+  [Ver evidência](../../evidencias/EV-EST-CAD-003/02-massa-teste-ui.png)
 
 * **EVD-CT-EST-CAD-003-03 — Validação UI:** sistema bloqueando o cadastro e exibindo a mensagem `Informe um nome de produto válido`.
-  [Ver evidência](../../evidencias/ct-est-cad-003/03-bloqueio-nome-abaixo-minimo.png)
+  [Ver evidência](../../evidencias/EV-EST-CAD-003/03-bloqueio-nome-abaixo-minimo.png)
 
 * **EVD-CT-EST-CAD-003-04 — Pós-condição:** consulta no banco após a execução retornando 0 registros para o SKU `CAM-VO-P`.
-  [Ver evidência](../../evidencias/ct-est-cad-003/04-pos-condicao-banco.png)
+  [Ver evidência](../../evidencias/EV-EST-CAD-003/04-pos-condicao-banco.png)

@@ -33,3 +33,4 @@ O produto somente pode ser inativado quando não existir nenhuma variação ativ
 produto.ativo = 1
 
 variacao_produto.ativo = 1
+```

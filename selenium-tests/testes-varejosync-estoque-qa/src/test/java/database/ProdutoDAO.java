@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ProdutoDAO {
     private static final String CAMINHO_BANCO =
-            "C:/estoque-qa-lab/backend/db/estoque_qa_lab.db";
+            "C:/varejosync-estoque-qa/backend/db/estoque_qa_lab.db";
 
     private static final String URL_BANCO =
             "jdbc:sqlite:" + CAMINHO_BANCO;
