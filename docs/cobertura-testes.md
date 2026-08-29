@@ -65,22 +65,22 @@ Ela não representa a porcentagem de todas as combinações, entradas ou cenári
 
 | Indicador | Situação atual |
 | --- | --- |
-| Regras de Negócio formalizadas | 13 |
-| Critérios de Aceite formalizados | 13 |
-| RNs com pelo menos um CT executado | 6 de 13 |
-| CAs com pelo menos um CT executado | 6 de 13 |
-| Casos de teste funcionais catalogados | 7 |
-| Casos de teste funcionais automatizados | 7 |
-| Casos funcionais com status Passou | 7 |
-| Casos funcionais documentados individualmente | 7 |
+| Regras de Negócio formalizadas | 14 |
+| Critérios de Aceite formalizados | 14 |
+| RNs com pelo menos um CT executado | 7 de 14 |
+| CAs com pelo menos um CT executado | 7 de 14 |
+| Casos de teste funcionais catalogados | 8 |
+| Casos de teste funcionais automatizados | 8 |
+| Casos funcionais com status Passou | 8 |
+| Casos funcionais documentados individualmente | 8 |
 | Testes automatizados de navegação / smoke | 2 |
-| Total de testes automatizados identificados | 9 |
+| Total de testes automatizados identificados | 10 |
 
 ### Cobertura por Regra de Negócio
 
-`6 / 13 ≈ 46%`
+`7 / 14 = 50%`
 
-A cobertura atual por RN é, portanto, de aproximadamente **46%**, considerando como coberta uma regra que possui pelo menos um caso de teste formalmente associado e executado.
+A cobertura atual por RN é, portanto, de **50%**, considerando como coberta uma regra que possui pelo menos um caso de teste formalmente associado e executado.
 
 ---
 
@@ -95,6 +95,7 @@ A cobertura atual por RN é, portanto, de aproximadamente **46%**, considerando 
 | CT-EST-EDT-001 | RN-011 | CA-011 | Edição | Alterar estoque mínimo da variação | Positivo | Sim | Passou |
 | CT-EST-VAR-001 | RN-012 | CA-012 | Vínculo produto/variações | Manter variações do mesmo produto vinculadas | Positivo | Sim | Passou |
 | CT-EST-EXC-001 | RN-013 | CA-013 | Inativação de variação | Inativar somente a variação selecionada | Positivo | Sim | Passou |
+| CT-EST-EXC-002 | RN-014 | CA-014 | Inativação de variação | Inativar a última variação ativa inativa o produto | Positivo | Sim | Passou |
 
 ---
 
@@ -115,6 +116,9 @@ A cobertura atual por RN é, portanto, de aproximadamente **46%**, considerando 
 | RN-011 | CA-011 | CT-EST-EDT-001 | Coberta |
 | RN-012 | CA-012 | CT-EST-VAR-001 | Coberta |
 | RN-013 | CA-013 | CT-EST-EXC-001 | Coberta |
+| RN-014 | CA-014 | CT-EST-EXC-002 | Cobertura parcial |
+
+> **RN-014 — cobertura parcial.** O `CT-EST-EXC-002` cobre, pela interface, a inativação da última variação ativa e a invariante de integridade em toda a base. O cenário de inativação **em massa** permanece descoberto: não existe tela para ele, o fluxo é exposto somente pelo endpoint `PATCH /produtos/exclusao-massa`, e foi justamente esse caminho que originou o BUG-003. É o gap de maior risco da suíte e depende de teste de API.
 
 ---
 

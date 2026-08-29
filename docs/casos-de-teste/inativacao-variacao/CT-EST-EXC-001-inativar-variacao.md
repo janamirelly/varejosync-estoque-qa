@@ -134,7 +134,7 @@ Após a correção do BUG-002, o caso de teste foi reexecutado.
 
 ## Automação relacionada
 
-- **Classe:** `CadastroProdutoTest`
+- **Classe:** `tests.ExclusaoProdutoTest`
 - **Método:** `CT_EST_EXC_001_inativarSomenteVariacaoSelecionada()`
 - **Status da última execução:** Passou
 
