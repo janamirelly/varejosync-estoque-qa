@@ -11,7 +11,7 @@
 * **Critério de aceite relacionado:** CA-001
 * **Ambiente:** Desenvolvimento local
 * **Automação:** Sim
-* **Status:** Passou
+* **Status:** Passou (por automação; evidência manual pendente)
 * **Data da execução:** 19/08/2026
 
 ## Objetivo
@@ -64,6 +64,25 @@ Verificar se o sistema impede o cadastro quando o campo **Nome do produto** não
 ## Status
 
 **Passou**
+
+## Evidências
+
+**Pendente de captura.**
+
+Este caso é executado por automação e o resultado é registrado pelo JUnit, mas ainda não possui evidência manual capturada. Enquanto ela não existir, o status **Passou** apoia-se apenas na execução automatizada.
+
+Para completar a evidência, ver o [padrão de evidências](../../padrao-evidencias.md). São necessárias:
+
+| # | Momento | O que capturar |
+| :---: | --- | --- |
+| 01 | Pré-condição | consulta ao banco pelo SKU da massa, retornando 0 linhas |
+| 02 | Ação | formulário preenchido, com o campo inválido visível |
+| 03 | Resultado na tela | mensagem de erro exibida pelo sistema |
+| 04 | Pós-condição | consulta ao banco pelo mesmo SKU, ainda retornando 0 linhas |
+
+A evidência 04 é a que realmente prova o caso: mensagem de erro na tela não demonstra que o back-end recusou o cadastro.
+
+Destino dos arquivos: `docs/evidencias/ct-est-cad-001/`
 
 ## Automação relacionada
 

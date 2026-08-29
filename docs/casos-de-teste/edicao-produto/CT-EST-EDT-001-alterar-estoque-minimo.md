@@ -76,19 +76,19 @@ O novo estoque mínimo utilizado na automação é obtido por:
 ## Evidências
 
 * **EVD-CT-EST-EDT-001-01 — Estado inicial da variação:** tela de edição da variação CAM-AZUL-M, apresentando estoque mínimo igual a 10 antes da alteração.
-[Ver evidência](../../evidencias/01-estoque-minimo-antes-edicao.png)
+[Ver evidência](../../evidencias/ct-est-edt-001/01-estoque-minimo-antes-edicao.png)
 
 * **EVD-CT-EST-EDT-001-02 — Novo estoque mínimo informado:** tela de edição da variação CAM-AZUL-M com o estoque mínimo alterado de 10 para 12, antes de salvar a alteração.
-[Ver evidência](../../evidencias/02-novo-estoque-minimo.png)
+[Ver evidência](../../evidencias/ct-est-edt-001/02-novo-estoque-minimo.png)
 
 * **EVD-CT-EST-EDT-001-03 — Confirmação da alteração:** sistema exibindo a mensagem Alteração salva com sucesso. após a operação.
-[Ver evidência](../../evidencias/03-mensagem-alteracao-sucesso.png)
+[Ver evidência](../../evidencias/ct-est-edt-001/03-mensagem-alteracao-sucesso.png)
 
 * **EVD-CT-EST-EDT-001-04 — Validação na consulta de estoque:** busca pela SKU CAM-AZUL-M após a edição, apresentando estoque mínimo igual a 12.
-[Ver evidência](../../evidencias/04-estoque-minimo-atualizado-ui.png)
+[Ver evidência](../../evidencias/ct-est-edt-001/04-estoque-minimo-atualizado-ui.png)
 
 * **EVD-CT-EST-EDT-001-05 — Persistência no banco de dados:** consulta pelo SKU CAM-AZUL-M confirmando estoque mínimo igual a 12.
-[Ver evidência](../../evidencias/05-pos-condicao-banco.png)
+[Ver evidência](../../evidencias/ct-est-edt-001/05-pos-condicao-banco.png)
 
 
 ## Automação relacionada
