@@ -9,19 +9,34 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>24</maven.compiler.source>
-        <maven.compiler.target>24</maven.compiler.target>
+        <!--
+            'release' em vez de source/target: além de aceitar a sintaxe do
+            Java 17, ele CONFERE que o código só usa API que existe no 17.
+            Com source/target, um método novo do JDK 24 compilaria aqui e
+            quebraria só no CI, em tempo de execução.
+
+            17 e não 24 porque é a versão do pipeline. O código não usa nada
+            além de record (estável desde o 16) e text block (desde o 15),
+            então roda igual no seu JDK 24 local.
+        -->
+        <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!--
+        Todas as dependências são <scope>test</scope>: este projeto não tem
+        código de produção, só testes. Com o scope certo, nada disso entra
+        num eventual pacote da aplicação.
+    -->
     <dependencies>
         <!-- Source: https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>4.44.0</version>
-            <scope>compile</scope>
+            <scope>test</scope>
         </dependency>
+
         <!-- Source: https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
             <groupId>junit</groupId>
@@ -35,13 +50,15 @@
             <groupId>net.datafaker</groupId>
             <artifactId>datafaker</artifactId>
             <version>2.5.4</version>
-            <scope>compile</scope>
+            <scope>test</scope>
         </dependency>
 
+        <!-- Leitura do banco SQLite para validar persistência -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.53.2.0</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -50,20 +67,20 @@
             <version>6.3.4</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>24</source>
-                    <target>24</target>
-                    <compilerArgs>--enable-preview</compilerArgs>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+
+    <!--
+        O bloco <build> foi removido. Ele só repetia source/target (agora em
+        'release', acima) e passava a flag "enable-preview" ao compilador.
+        Essa flag marca as classes como "compiladas com preview", e o Java
+        passa a exigi-la também na EXECUÇÃO. Como o Surefire não a recebia,
+        era um "roda na IDE, quebra no mvn test" esperando para acontecer.
+        O código não usa nenhum recurso preview, então a flag só trazia risco.
+
+        (Nota: o nome real da flag tem dois hifens na frente. Escrevo sem
+        eles aqui porque dois hifens seguidos são proibidos dentro de um
+        comentário XML - foi exatamente esse detalhe que invalidou a
+        primeira versão deste arquivo.)
+    -->
 
 </project>

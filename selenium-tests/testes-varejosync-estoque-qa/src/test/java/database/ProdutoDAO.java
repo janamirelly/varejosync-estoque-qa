@@ -1,14 +1,16 @@
 package database;
 
-import java.math.BigDecimal;
+import core.Configuracao;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.List;
 
 public class ProdutoDAO {
-    private static final String CAMINHO_BANCO =
-            "C:/varejosync-estoque-qa/backend/db/estoque_qa_lab.db";
+
+    /** O caminho vem de core.Configuracao — nunca fixo no código. */
+    private static final String CAMINHO_BANCO = Configuracao.caminhoDoBanco();
 
     private static final String URL_BANCO =
             "jdbc:sqlite:" + CAMINHO_BANCO;
@@ -18,7 +20,10 @@ public class ProdutoDAO {
         try {
             if (!Files.exists(Path.of(CAMINHO_BANCO))) {
                 throw new RuntimeException(
-                        "Arquivo do banco não encontrado no caminho: " + CAMINHO_BANCO
+                        "Arquivo do banco não encontrado em: " + CAMINHO_BANCO
+                        + System.lineSeparator()
+                        + "Aponte outro caminho com -Dbanco.caminho=<caminho> "
+                        + "ou com a variável de ambiente BANCO_CAMINHO."
                 );
             }
 
@@ -59,6 +64,40 @@ public class ProdutoDAO {
             throw new RuntimeException("Erro ao consultar produto por sku!", erro);
         }
         return false;
+    }
+
+    /**
+     * Espera até o produto aparecer no banco, por no máximo 10 segundos.
+     *
+     * A tela responde antes de o banco terminar de gravar, então consultar no
+     * instante seguinte ao clique é uma corrida — às vezes o teste ganha, às
+     * vezes perde.
+     *
+     * Não é um Thread.sleep fixo: o método retorna no instante em que
+     * encontra o produto. Os 300ms são o intervalo entre consultas e os 10
+     * segundos o limite para não travar quando o produto não foi criado.
+     *
+     * Devolve true ou false; quem reporta a falha é o assert do teste.
+     */
+    public static boolean aguardarProdutoPorSku(String sku) {
+        long limite = System.currentTimeMillis() + 10_000;
+
+        while (System.currentTimeMillis() < limite) {
+
+            if (existeProdutoPorSku(sku)) {
+                return true;
+            }
+
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException erro) {
+                Thread.currentThread().interrupt();
+                return false;
+            }
+        }
+
+        // Última tentativa depois de estourar o tempo.
+        return existeProdutoPorSku(sku);
     }
 
     public static boolean existeProdutoComEstoqueMinimo(String sku, String novoEstoqueMinimo) {
@@ -240,6 +279,45 @@ public class ProdutoDAO {
                 "Quantidade não encontrada para o SKU: " + sku
         );
     }
+    /**
+     * Conta as variações ativas vinculadas a produtos inativos em toda a base.
+     *
+     * É a invariante da RN-014 escrita como consulta: o resultado tem de ser
+     * sempre 0. Uma variação ativa presa a um produto inativo continua no
+     * banco com SKU e saldo, mas some das telas — o registro existe, o usuário
+     * não o encontra e o sistema não avisa.
+     *
+     * A verificação é global, e não escopada ao produto do teste, porque a
+     * regra também é global.
+     */
+    public static int contarVariacoesAtivasComProdutoInativo() {
+        String sql = """
+            SELECT COUNT(*)
+            FROM variacao_produto vp
+            INNER JOIN produto p
+                    ON p.id_produto = vp.id_produto
+            WHERE vp.ativo = 1
+              AND p.ativo = 0
+            """;
+
+        try (Connection conexao = conectar();
+             PreparedStatement statement = conexao.prepareStatement(sql);
+             ResultSet resultado = statement.executeQuery()) {
+
+            if (resultado.next()) {
+                return resultado.getInt(1);
+            }
+
+        } catch (Exception erro) {
+            throw new RuntimeException(
+                    "Erro ao verificar a integridade entre produto e variações.",
+                    erro
+            );
+        }
+
+        return 0;
+    }
+
     public static void removerDadosTestePorSkus(List<String> skus) {
 
         if (skus == null || skus.isEmpty()) {
