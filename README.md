@@ -1,6 +1,8 @@
 # VarejoSync — Módulo de Estoque | Portfólio QA
 
-**Portfólio de Quality Assurance construído sobre um módulo real de gestão de estoque.** Regras de negócio formalizadas, casos de teste rastreáveis da regra até a evidência, três defeitos investigados até a causa raiz no banco de dados e automação de interface em Java.
+**Portfólio de Quality Assurance sobre um módulo de gestão de estoque.** Regras de negócio formalizadas, casos de teste rastreáveis da regra até a evidência, três defeitos investigados até a causa raiz no banco de dados e automação de interface em Java.
+
+> A aplicação foi construída como **ambiente de estudo**, e o processo de QA aplicado sobre ela do zero: as regras de negócio foram levantadas a partir do comportamento observado, não recebidas prontas. Os defeitos documentados não foram plantados — apareceram durante a execução dos testes.
 
 ![Dashboard de estoque do VarejoSync](assets/screenshots/dashboard-estoque.png)
 
@@ -32,6 +34,8 @@
 ## 1. O que é este projeto
 
 O **VarejoSync** é uma aplicação web de gestão de varejo. Este repositório documenta o trabalho de QA sobre o seu **módulo de estoque**: um ciclo completo de qualidade, do entendimento da regra de negócio até a automação do cenário e o registro da evidência.
+
+**É um laboratório de estudo, e isso define o escopo.** A aplicação existe para servir de alvo de testes. Não havia especificação pronta nem área de produto para consultar: cada regra de negócio foi levantada a partir do comportamento observado no sistema, escrita, transformada em critério de aceite e só então em caso de teste. Os três defeitos documentados apareceram durante essa execução — foram investigados até a causa no banco, corrigidos e retestados.
 
 O que este portfólio demonstra:
 
