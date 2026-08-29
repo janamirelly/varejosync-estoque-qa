@@ -1,52 +1,67 @@
 # VarejoSync — Módulo de Estoque | Portfólio QA
 
-Portfólio de Quality Assurance desenvolvido sobre o módulo de estoque do **VarejoSync**, uma aplicação web voltada à gestão de varejo.
+**Portfólio de Quality Assurance construído sobre um módulo real de gestão de estoque.** Regras de negócio formalizadas, casos de teste rastreáveis da regra até a evidência, três defeitos investigados até a causa raiz no banco de dados e automação de interface em Java.
 
-O projeto demonstra a aplicação prática de testes funcionais, análise de regras de negócio, critérios de aceite, documentação de casos de teste, investigação de defeitos, validações em banco de dados e automação de interface com Java, Selenium WebDriver e JUnit.
+![Dashboard de estoque do VarejoSync](assets/screenshots/dashboard-estoque.png)
 
-A estratégia de testes utiliza rastreabilidade entre:
+| Regras de negócio | Testes automatizados | Defeitos investigados | Evidências |
+| :---: | :---: | :---: | :---: |
+| **14** | **10** | **3** | **38** |
 
-`Regra de Negócio → Critério de Aceite → Caso de Teste → Execução → Evidência`
-
----
-
-## Destaques do portfólio
-
-| Artefato | Conteúdo |
-| --- | --- |
-| [Cobertura de testes](./docs/cobertura-testes.md) | Matriz RN → CA → CT, cobertura atual e gaps |
-| [Caso de teste — Cadastro válido](./docs/casos-de-teste/cadastro-produto/CT-EST-CAD-004-cadastrar-produto-valido.md) | Fluxo positivo de cadastro e persistência |
-| [Caso de teste — Vínculo produto/variações](./docs/casos-de-teste/variacao-produto/CT-EST-VAR-001-vincular-variacoes-mesmo-produto.md) | Validação do relacionamento entre produto e variações |
-| [Caso de teste — Inativação de variação](./docs/casos-de-teste/inativacao-variacao/CT-EST-EXC-001-inativar-variacao.md) | Inativação lógica individual e reteste de defeito |
-| [BUG-001 — Vínculo incorreto entre produto e variações](./docs/bugs/bug-001-variacoes-mesmo-produto-ids-distintos.md) | Investigação do relacionamento de dados |
-| [BUG-002 — Inativação indevida do produto](./docs/bugs/bug-002-inativacao-variacao-inativa-produto.md) | Defeito investigado, corrigido e retestado |
-| [Automação — Java, Selenium e JUnit](./selenium-tests/testes-varejosync-estoque-qa) | Testes automatizados de interface e validação em banco |
+`Java` · `Selenium WebDriver` · `JUnit` · `SQL / SQLite` · `Node.js` · `Git`
 
 ---
 
-## Cobertura atual
+## Índice
 
-| Indicador | Situação |
-| --- | ---: |
-| Regras de Negócio formalizadas | 13 |
-| Critérios de Aceite formalizados | 13 |
-| RNs com pelo menos um CT executado | 6 de 13 |
-| Cobertura por RN | ~46% |
-| Casos de teste funcionais catalogados | 7 |
-| Casos funcionais automatizados | 7 |
-| Casos funcionais documentados | 7 |
-| Testes de navegação / smoke | 2 |
-| Total de testes automatizados identificados | 9 |
-
-A porcentagem de cobertura por RN representa regras que possuem ao menos um caso de teste formalmente associado e executado.
-
-Ela **não representa cobertura exaustiva de todas as combinações possíveis**.
-
-[Ver matriz de cobertura completa](./docs/cobertura-testes.md)
+| | Seção | O que você encontra |
+| :---: | --- | --- |
+| 1 | [O que é este projeto](#1-o-que-é-este-projeto) | contexto em 30 segundos |
+| 2 | [O sistema testado](#2-o-sistema-testado) | telas e funcionalidades |
+| 3 | [Como eu testo](#3-como-eu-testo) | a estratégia e a rastreabilidade |
+| 4 | [Defeitos encontrados](#4-defeitos-encontrados) | 3 bugs, da investigação ao reteste |
+| 5 | [Automação de testes](#5-automação-de-testes) | arquitetura do código e como rodar |
+| 6 | [Validação em banco de dados](#6-validação-em-banco-de-dados) | o que a interface não prova |
+| 7 | [Cobertura atual](#7-cobertura-atual) | números e o que ainda falta |
+| 8 | [Documentação completa](#8-documentação-completa) | todos os artefatos |
+| 9 | [Tecnologias](#9-tecnologias) | stack de QA e da aplicação |
+| 10 | [Próximos passos](#10-próximos-passos) | o que vem a seguir |
 
 ---
 
-## Funcionalidades validadas
+## 1. O que é este projeto
+
+O **VarejoSync** é uma aplicação web de gestão de varejo. Este repositório documenta o trabalho de QA sobre o seu **módulo de estoque**: um ciclo completo de qualidade, do entendimento da regra de negócio até a automação do cenário e o registro da evidência.
+
+O que este portfólio demonstra:
+
+- **Análise funcional** — 14 regras de negócio e 14 critérios de aceite formalizados a partir do comportamento do sistema;
+- **Desenho de casos de teste** — cenários positivos, negativos e de integridade de dados, documentados com pré-condições, massa, passos e resultado esperado;
+- **Investigação de defeitos** — três bugs encontrados, analisados através de interface, backend e banco, corrigidos e retestados;
+- **Automação de interface** — 10 casos automatizados em Java, Selenium e JUnit, com validação de persistência via SQL;
+- **Rastreabilidade** — cada teste tem origem em uma regra e destino em uma evidência.
+
+A prioridade do projeto é **cobertura consistente e comprovada**, não cobertura ampla. Os gaps estão registrados abertamente na [matriz de cobertura](./docs/cobertura-testes.md).
+
+---
+
+## 2. O sistema testado
+
+O módulo de estoque permite cadastrar produtos com variações (cor e tamanho), consultar saldos, editar parâmetros de reposição e inativar variações individualmente.
+
+### Dashboard de estoque
+
+![Dashboard de estoque do VarejoSync](assets/screenshots/dashboard-estoque.png)
+
+### Consulta de estoque
+
+![Consulta de produtos, variações e saldos](assets/screenshots/consulta-estoque.png)
+
+### Cadastro de produto
+
+![Cadastro de produto e variação](assets/screenshots/cadastro-produto.png)
+
+### Funcionalidades validadas
 
 | Área | Cobertura desenvolvida |
 | --- | --- |
@@ -59,13 +74,13 @@ Ela **não representa cobertura exaustiva de todas as combinações possíveis**
 | Navegação | tela inicial e acesso ao cadastro pelo menu |
 | Investigação de defeitos | análise de comportamento entre UI, backend e banco |
 
-As demais condições das regras de SKU e outras regras ainda não cobertas estão explicitamente registradas no documento de cobertura.
+> A aplicação é executada em ambiente de desenvolvimento local. As evidências do repositório registram os comportamentos validados na interface e no banco de dados.
 
 ---
 
-## Estratégia de testes
+## 3. Como eu testo
 
-Os testes são elaborados a partir das regras de negócio e critérios de aceite.
+Nenhum teste nasce de improviso. Todo caso tem origem em uma regra de negócio e termina em uma evidência registrada:
 
 ```text
 Regra de Negócio
@@ -81,7 +96,7 @@ Resultado esperado x obtido
 Evidência
 ```
 
-Quando o comportamento apresentado pela interface não é suficiente para determinar o resultado da operação, a investigação continua pelas demais camadas:
+Quando o comportamento da interface **não é suficiente** para determinar o resultado da operação, a investigação continua pelas camadas de baixo:
 
 ```text
 Interface
@@ -91,31 +106,98 @@ Backend / API
 Banco de dados
 ```
 
-Essa abordagem é utilizada principalmente nos cenários de persistência, edição, vínculo entre produto e variações e inativação lógica.
+Essa descida é o que diferencia "a tela mostrou sucesso" de "a operação realmente aconteceu". Ela é usada nos cenários de persistência, edição, vínculo entre produto e variações e inativação lógica — e foi ela que revelou os três defeitos da seção seguinte.
+
+A especificação funcional fica separada dos casos de teste:
+
+| Documento | Conteúdo |
+| --- | --- |
+| [Regras de negócio — Cadastro de produto](./docs/regras-negocio/cadastro-produto.md) | RN-001 a RN-012 |
+| [Regra — Inativação de variação](./docs/regras-negocio/inativacao-variacao.md) | RN-013 |
+| [Regra — Consistência de estado entre produto e variações](./docs/regras-negocio/consistência-de-estado-entre-produto-e-variações.md) | RN-014 |
+| [Critérios de aceite — Cadastro](./docs/criterios-aceite/cadastro-produto.md) | CA-001 a CA-012 |
+| [Critério — Inativação de variação](./docs/criterios-aceite/inativacao-variacao.md) | CA-013 |
+| [Critério — Consistência de estado entre produto e variações](./docs/criterios-aceite/consistencia-estado-produto-variacoes.md) | CA-014 |
 
 ---
 
-## Visualização do sistema
+## 4. Defeitos encontrados
 
-### Dashboard de estoque
+Três defeitos de integridade de dados foram identificados, investigados até a causa no banco, corrigidos e retestados.
 
-![Dashboard de estoque do VarejoSync](assets/screenshots/dashboard-estoque.png)
+| ID | Defeito | Severidade | Status |
+| --- | --- | --- | --- |
+| [BUG-001](./docs/bugs/bug-001-variacoes-mesmo-produto-ids-distintos.md) | Variações do mesmo produto vinculadas a produtos distintos | Alta | Fechado |
+| [BUG-002](./docs/bugs/bug-002-inativacao-variacao-inativa-produto.md) | Inativar uma variação inativava o produto inteiro | Alta | Fechado |
+| [BUG-003](./docs/bugs/bug-003-exclusao-massa-inativa-produto-com-variacoes-ativas.md) | Exclusão em massa inativava produto com variações ainda ativas | Alta | Fechado |
 
-### Consulta de estoque
+### BUG-002 — Inativação de uma variação afetava o produto inteiro
 
-![Consulta de produtos, variações e saldos](assets/screenshots/consulta-estoque.png)
+Durante a execução do `CT-EST-EXC-001`, a ação destinada a uma única variação fazia **todas** as variações do produto sumirem da consulta de estoque.
 
-### Cadastro de produto
+**Investigação.** A interface enviava corretamente o identificador da variação selecionada. A análise do backend mostrou que o fluxo usava o `id_produto` associado e executava a inativação sobre o produto de origem:
 
-![Cadastro de produto e variação](assets/screenshots/cadastro-produto.png)
+```sql
+UPDATE produto
+SET ativo = 0
+WHERE id_produto = ?;
+```
 
-> A aplicação é executada atualmente em ambiente de desenvolvimento local.
->
-> As evidências do repositório registram os comportamentos validados na interface e no banco de dados.
+Como a consulta de estoque considera apenas produtos e variações ativos, todas as variações deixavam de ser apresentadas — um sintoma na tela cuja causa estava duas camadas abaixo.
+
+**Correção.** A operação passou a atuar diretamente sobre a variação:
+
+```sql
+UPDATE variacao_produto
+SET ativo = 0
+WHERE id_variacao = ?;
+```
+
+Estado após a correção:
+
+```text
+Produto de origem            ativo = 1
+Variação selecionada         ativo = 0
+Outra variação               ativo = 1
+```
+
+O cenário foi reexecutado manualmente e por automação. **Resultado do reteste: Passou.**
+
+[Ver BUG-002 completo](./docs/bugs/bug-002-inativacao-variacao-inativa-produto.md) · [Ver CT-EST-EXC-001](./docs/casos-de-teste/inativacao-variacao/CT-EST-EXC-001-inativar-variacao.md)
+
+### BUG-001 — Vínculo incorreto entre produto e variações
+
+Nos testes de cadastro, variações do mesmo produto eram vinculadas a registros de produto distintos.
+
+O comportamento esperado:
+
+```text
+Produto
+id_produto = X
+      │
+      ├── Variação P
+      │   id_variacao = A
+      │
+      └── Variação M
+          id_variacao = B
+```
+
+As variações devem ter identificadores próprios, mas compartilhar o mesmo `id_produto`. Esse é o tipo de defeito **invisível na interface**: a tela mostrava duas linhas corretas, e só a consulta ao banco revelou a duplicação do produto.
+
+Após a correção, o cenário passou a ser coberto pelo `CT-EST-VAR-001`, que valida no banco:
+
+```text
+id_produto(P) = id_produto(M)
+id_variacao(P) != id_variacao(M)
+```
+
+[Ver BUG-001 completo](./docs/bugs/bug-001-variacoes-mesmo-produto-ids-distintos.md) · [Ver CT-EST-VAR-001](./docs/casos-de-teste/variacao-produto/CT-EST-VAR-001-vincular-variacoes-mesmo-produto.md)
 
 ---
 
-## Casos de teste automatizados
+## 5. Automação de testes
+
+**10 casos automatizados** em Java, Selenium WebDriver e JUnit, seguindo o padrão **Page Object**.
 
 ### Funcionais
 
@@ -128,6 +210,7 @@ Essa abordagem é utilizada principalmente nos cenários de persistência, ediç
 | `CT-EST-EDT-001` | Alterar estoque mínimo da variação | Passou |
 | `CT-EST-VAR-001` | Manter variações vinculadas ao mesmo produto | Passou |
 | `CT-EST-EXC-001` | Inativar somente a variação selecionada | Passou |
+| `CT-EST-EXC-002` | Inativar a última variação ativa inativa o produto | Passou |
 
 ### Navegação / Smoke
 
@@ -136,50 +219,66 @@ Essa abordagem é utilizada principalmente nos cenários de persistência, ediç
 | `CT-EST-NAV-001` | Validar tela inicial do estoque | Passou |
 | `CT-EST-NAV-002` | Acessar cadastro pelo menu | Passou |
 
-[Ver código da automação](./selenium-tests/testes-varejosync-estoque-qa)
+### Arquitetura
 
----
+Cada camada responde **uma** pergunta:
 
-## Automação de interface
-
-A automação utiliza:
-
-**Java + Selenium WebDriver + JUnit**
-
-Os testes incluem validações na interface e, nos cenários em que a persistência é relevante, consultas ao banco SQLite.
-
-A estrutura foi separada por responsabilidades:
+| Camada | Responde |
+| --- | --- |
+| `tests/` | o quê está sendo validado |
+| `pages/` | como a tela funciona |
+| `massas/` | quais dados são usados |
+| `database/` | se persistiu de verdade |
+| `core/` | o que muda entre a máquina local e um servidor |
 
 ```text
-src/test/java/
+selenium-tests/testes-varejosync-estoque-qa/src/test/java/
 │
-├── CadastroProdutoTest
-├── CadastroProdutoNegativoTest
-├── NavegacaoEstoqueTest
-│
-├── database/
-│   └── ProdutoDAO
-│
-├── massas/
-│   └── MassaCadastroProduto
-│
-└── variaveis/
-    ├── CadastroProduto
-    ├── ElementosEstoque
-    └── VariaveisEstoque
+├── core/       BaseTest · Configuracao
+├── pages/      BasePage · MenuPage · DashboardPage
+│               CadastroProdutoPage · ConsultarEstoquePage
+├── massas/     Produto · ParDeVariacoes · MassaProduto
+├── database/   ProdutoDAO
+├── variaveis/  VariaveisEstoque
+└── tests/      uma classe por prefixo de caso de teste
+                CadastroProduto · CadastroProdutoNegativo · Edicao
+                Exclusao · Variacao · Navegacao
 ```
 
-São utilizadas esperas explícitas com `WebDriverWait` e assertions do JUnit para validação dos resultados.
+Os locators ficam dentro da Page da tela a que pertencem, e **nenhuma Page contém assertions**: a Page reporta o que a tela mostrou, o teste decide se está correto. Assim a falha aparece como *"esperava X, mas veio Y"* em vez de um erro genérico de timeout.
 
-As massas que precisam ser únicas são geradas dinamicamente, reduzindo colisões entre execuções.
+São usadas esperas explícitas com `WebDriverWait` — nunca `Thread.sleep` fixo — inclusive para a persistência no banco, que conclui depois da resposta da interface.
+
+A massa que precisa ser única é gerada dinamicamente. Cada teste registra os SKUs que criou, e o `ProdutoDAO` remove esses registros ao final da execução, junto com estoque, movimentações e auditoria — sem isso os testes deixariam de ser repetíveis.
+
+### Como executar
+
+**Pré-requisitos:** Node.js, JDK 17+, Maven e Chrome instalados.
+
+```bash
+# 1. Banco e API
+cd backend
+npm install
+npm run seed          # cria o estoque_qa_lab.db a partir do schema
+npm start             # API em http://localhost:3001
+
+# 2. Frontend
+# Live Server do VS Code na raiz do projeto
+# → http://127.0.0.1:5500/frontend/index.html
+
+# 3. Testes
+cd selenium-tests/testes-varejosync-estoque-qa
+mvn test                        # a suíte inteira
+mvn test -Dheadless=true        # sem abrir janela do navegador
+```
+
+[Detalhes da suíte de automação](./selenium-tests/testes-varejosync-estoque-qa)
 
 ---
 
-## Validação em banco de dados
+## 6. Validação em banco de dados
 
-O módulo utiliza **SQLite**.
-
-As consultas ao banco são utilizadas para confirmar estados que não podem ser determinados somente pela interface, como:
+A interface confirma que a ação foi aceita. **Ela não confirma que o dado ficou correto.** As consultas ao banco cobrem exatamente essa lacuna:
 
 ```sql
 SELECT
@@ -194,125 +293,61 @@ INNER JOIN variacao_produto vp
 WHERE vp.sku = ?;
 ```
 
-Entre as validações realizadas estão persistência após cadastro, alteração de estoque mínimo, vínculo entre variações e produto e estado lógico dos registros após uma inativação.
+Entre as validações realizadas:
+
+- persistência do produto após o cadastro;
+- alteração e persistência do estoque mínimo, **e** confirmação de que a quantidade em estoque não foi alterada junto;
+- vínculo entre variações e produto (`id_produto` compartilhado, `id_variacao` distintos);
+- estado lógico dos registros após uma inativação.
+
+Os três defeitos da seção 4 foram identificados por esse caminho — nenhum deles seria visível olhando apenas a tela.
 
 ---
 
-## Defeito em destaque — BUG-002
+## 7. Cobertura atual
 
-### Inativação de uma variação afetava o produto inteiro
+| Indicador | Situação |
+| --- | ---: |
+| Regras de Negócio formalizadas | 14 |
+| Critérios de Aceite formalizados | 14 |
+| RNs com pelo menos um CT executado | 7 de 14 |
+| Cobertura por RN | 50% |
+| Casos de teste funcionais catalogados | 8 |
+| Casos funcionais automatizados | 8 |
+| Casos funcionais documentados | 8 |
+| Testes de navegação / smoke | 2 |
+| Total de testes automatizados | 10 |
 
-Durante a execução do `CT-EST-EXC-001`, foi identificado que a ação destinada a uma única variação causava o desaparecimento de todas as variações do produto na consulta de estoque.
+A porcentagem representa regras que possuem **ao menos um** caso de teste formalmente associado e executado. Ela **não representa cobertura exaustiva** de todas as combinações possíveis.
 
-### Investigação
-
-A interface enviava corretamente o identificador da variação selecionada.
-
-A análise do backend demonstrou que o fluxo utilizava o `id_produto` associado e executava a inativação sobre o produto de origem:
-
-```sql
-UPDATE produto
-SET ativo = 0
-WHERE id_produto = ?;
-```
-
-Como a consulta de estoque considera apenas produtos e variações ativas, todas as variações deixavam de ser apresentadas.
-
-### Correção
-
-A operação passou a atuar diretamente sobre a variação:
-
-```sql
-UPDATE variacao_produto
-SET ativo = 0
-WHERE id_variacao = ?;
-```
-
-Após a correção:
-
-```text
-Produto de origem            ativo = 1
-Variação selecionada         ativo = 0
-Outra variação               ativo = 1
-```
-
-O cenário foi reexecutado manualmente e por automação.
-
-**Resultado do reteste: Passou.**
-
-[Ver BUG-002 completo](./docs/bugs/bug-002-inativacao-variacao-inativa-produto.md)
-
-[Ver CT-EST-EXC-001](./docs/casos-de-teste/inativacao-variacao/CT-EST-EXC-001-inativar-variacao.md)
+[Ver matriz de cobertura completa](./docs/cobertura-testes.md)
 
 ---
 
-## Outro defeito investigado — BUG-001
-
-Durante os testes de cadastro de variações, foi identificado que diferentes variações pertencentes ao mesmo produto eram vinculadas a registros de produto distintos.
-
-O comportamento esperado era:
-
-```text
-Produto
-id_produto = X
-      │
-      ├── Variação P
-      │   id_variacao = A
-      │
-      └── Variação M
-          id_variacao = B
-```
-
-As variações devem possuir identificadores próprios, mas compartilhar o mesmo `id_produto`.
-
-Após a correção, o cenário passou a ser coberto pelo `CT-EST-VAR-001`, que valida no banco:
-
-```text
-id_produto(P) = id_produto(M)
-id_variacao(P) != id_variacao(M)
-```
-
-[Ver BUG-001 completo](./docs/bugs/bug-001-variacoes-mesmo-produto-ids-distintos.md)
-
-[Ver CT-EST-VAR-001](./docs/casos-de-teste/variacao-produto/CT-EST-VAR-001-vincular-variacoes-mesmo-produto.md)
-
----
-
-## Regras de negócio e critérios de aceite
-
-A especificação funcional do módulo está documentada separadamente dos casos de teste.
-
-| Documento | Conteúdo |
-| --- | --- |
-| [Regras de negócio — Cadastro de produto](./docs/regras-negocio/cadastro-produto.md) | RN-001 a RN-012 |
-| [Regra — Inativação de variação](./docs/regras-negocio/inativacao-variacao.md) | RN-013 |
-| [Critérios de aceite — Cadastro](./docs/criterios-aceite/cadastro-produto.md) | CA-001 a CA-012 |
-| [Critério — Inativação de variação](./docs/criterios-aceite/inativacao-variacao.md) | CA-013 |
-
----
-
-## Documentação e evidências
-
-Os artefatos de QA estão organizados em:
+## 8. Documentação completa
 
 ```text
 docs/
 │
-├── regras-negocio/
-├── criterios-aceite/
-├── casos-de-teste/
-├── bugs/
-├── evidencias/
-└── cobertura-testes.md
+├── regras-negocio/      RN-001 a RN-014
+├── criterios-aceite/    CA-001 a CA-014
+├── casos-de-teste/      7 casos funcionais documentados
+├── bugs/                BUG-001, BUG-002, BUG-003
+├── evidencias/          38 registros de execução
+└── cobertura-testes.md  matriz RN → CA → CT
 ```
 
-Os casos de teste registram objetivo, pré-condições, massa, passos, resultado esperado, resultado obtido, status, automação relacionada e evidências quando aplicável.
+Cada caso de teste registra objetivo, pré-condições, massa, passos, resultado esperado, resultado obtido, status, automação relacionada e evidências. Cada defeito mantém o vínculo com a regra, o critério de aceite e o caso de teste que originou a investigação.
 
-Os defeitos documentados mantêm o vínculo com a regra, critério de aceite e caso de teste que originou a investigação.
+**Comece por aqui:**
+
+- [Matriz de cobertura](./docs/cobertura-testes.md) — a visão geral do que existe e do que falta
+- [CT-EST-CAD-004 — Cadastrar produto válido](./docs/casos-de-teste/cadastro-produto/CT-EST-CAD-004-cadastrar-produto-valido.md) — um caso de teste completo
+- [BUG-002 — Inativação indevida do produto](./docs/bugs/bug-002-inativacao-variacao-inativa-produto.md) — uma investigação completa
 
 ---
 
-## Tecnologias
+## 9. Tecnologias
 
 ### QA e automação
 
@@ -337,37 +372,41 @@ Os defeitos documentados mantêm o vínculo com a regra, critério de aceite e c
 | Express | API REST |
 | SQLite | banco de dados |
 
----
-
-## Cobertura ainda planejada
-
-O projeto mantém os gaps explicitamente registrados na matriz de cobertura.
-
-Entre as próximas regras previstas para expansão estão:
-
-- `RN-001` — demais valores limite do nome;
-- `RN-004` — demais validações estruturais do SKU;
-- `RN-005` — unicidade de SKU;
-- `RN-008` — duplicidade produto/cor/tamanho;
-- `RN-002`, `RN-003`, `RN-006`, `RN-007` e `RN-009`.
-
-Funcionalidades de movimentação, histórico e alertas de estoque também podem ser incorporadas posteriormente.
-
-A prioridade atual do portfólio é manter a cobertura existente consistente, rastreável e baseada em evidências, sem apresentar cenários ainda não validados como cobertura concluída.
-
----
-
-## Estrutura do projeto
+### Estrutura do repositório
 
 ```text
 varejosync-estoque-qa/
 │
-├── frontend/
-├── backend/
-├── selenium-tests/
-├── docs/
-├── assets/
+├── frontend/         interface da aplicação
+├── backend/          API REST e banco SQLite
+├── selenium-tests/   automação de testes
+├── docs/             artefatos de QA
+├── assets/           imagens do projeto
 └── README.md
 ```
 
-O frontend e o backend permitem executar localmente a aplicação utilizada nos testes, enquanto `selenium-tests` concentra a automação e `docs` reúne os artefatos de QA.
+---
+
+## 10. Próximos passos
+
+Os gaps estão registrados abertamente na matriz de cobertura. As próximas regras previstas:
+
+- `RN-001` — demais valores limite do nome;
+- `RN-004` — demais validações estruturais do SKU;
+- `RN-005` — unicidade de SKU;
+- `RN-008` — duplicidade produto / cor / tamanho;
+- `RN-002`, `RN-003`, `RN-006`, `RN-007` e `RN-009`.
+
+Também previstos:
+
+- automatizar por **API** o cenário de inativação em massa (`PATCH /produtos/exclusao-massa`) — é o caminho que originou o BUG-003 e o único da `RN-014` sem cobertura, por não possuir tela;
+- cobertura de movimentação, histórico e alertas de estoque;
+- execução da suíte em pipeline de integração contínua.
+
+A prioridade atual é manter a cobertura existente **consistente, rastreável e baseada em evidências**, sem apresentar como concluído aquilo que ainda não foi validado.
+
+---
+
+**Jana Mirelly** — Quality Assurance
+
+[LinkedIn](https://www.linkedin.com/in/janayna-mirelly-dev)
