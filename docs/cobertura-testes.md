@@ -59,6 +59,10 @@ A porcentagem de cobertura por regra representa quantas RNs possuem pelo menos u
 
 Ela não representa a porcentagem de todas as combinações, entradas ou cenários possíveis do sistema.
 
+> **Catalogados (9) e automatizados (8) deixaram de ser iguais.** O `CT-EST-CAD-005` é executado
+> manualmente via Postman e ainda não possui automação correspondente. Automatizar a camada API
+> é o próximo passo previsto na seção 13.
+
 ---
 
 ## 3. Resumo da cobertura atual
@@ -69,12 +73,13 @@ Ela não representa a porcentagem de todas as combinações, entradas ou cenári
 | Critérios de Aceite formalizados | 14 |
 | RNs com pelo menos um CT executado | 7 de 14 |
 | CAs com pelo menos um CT executado | 7 de 14 |
-| Casos de teste funcionais catalogados | 8 |
+| Casos de teste funcionais catalogados | 9 |
 | Casos de teste funcionais automatizados | 8 |
-| Casos funcionais com status Passou | 8 |
-| Casos funcionais documentados individualmente | 8 |
+| Casos funcionais com status Passou | 9 |
+| Casos funcionais documentados individualmente | 9 |
 | Testes automatizados de navegação / smoke | 2 |
 | Total de testes automatizados identificados | 10 |
+| Casos de teste por camada | 8 UI · 1 API |
 
 ### Cobertura por Regra de Negócio
 
@@ -96,6 +101,7 @@ A cobertura atual por RN é, portanto, de **50%**, considerando como coberta uma
 | CT-EST-VAR-001 | RN-012 | CA-012 | Vínculo produto/variações | Manter variações do mesmo produto vinculadas | Positivo | Sim | Passou |
 | CT-EST-EXC-001 | RN-013 | CA-013 | Inativação de variação | Inativar somente a variação selecionada | Positivo | Sim | Passou |
 | CT-EST-EXC-002 | RN-014 | CA-014 | Inativação de variação | Inativar a última variação ativa inativa o produto | Positivo | Sim | Passou |
+| CT-EST-CAD-005 | RN-001 | CA-001 | Cadastro | API bloqueia nome com 2 caracteres | Negativo | Não | Passou |
 
 ---
 
@@ -103,7 +109,7 @@ A cobertura atual por RN é, portanto, de **50%**, considerando como coberta uma
 
 | RN | CA | Caso de teste | Situação |
 | --- | --- | --- | --- |
-| RN-001 | CA-001 | CT-EST-CAD-001 / CT-EST-CAD-003 | Cobertura parcial |
+| RN-001 | CA-001 | CT-EST-CAD-001 / CT-EST-CAD-003 / CT-EST-CAD-005 | Cobertura parcial |
 | RN-002 | CA-002 | — | Não coberta |
 | RN-003 | CA-003 | — | Não coberta |
 | RN-004 | CA-004 | CT-EST-CAD-002 | Cobertura parcial |
@@ -133,7 +139,7 @@ A RN-001 possui cobertura automatizada parcial.
 | Condição | Técnica | Caso de teste | Situação |
 | --- | --- | --- | --- |
 | Nome obrigatório | PE | CT-EST-CAD-001 — Nome vazio | Executado, documentado e automatizado |
-| Nome com menos de 3 caracteres | AVL | CT-EST-CAD-003 — Nome com 2 caracteres | Executado, documentado e automatizado |
+| Nome com menos de 3 caracteres | AVL | CT-EST-CAD-003 (UI) / CT-EST-CAD-005 (API) | Executado e documentado nas duas camadas |
 | Nome com exatamente 3 caracteres | AVL | Não criado | Planejado |
 | Nome com exatamente 30 caracteres | AVL | Não criado | Planejado |
 | Nome com mais de 30 caracteres | AVL | Não criado | Planejado |
@@ -322,7 +328,10 @@ Os dois cenários estão automatizados e foram executados com sucesso.
 | CT-EST-CAD-004 | `casos-de-teste/cadastro-produto/CT-EST-CAD-004-cadastrar-produto-valido.md` | Documentado |
 | CT-EST-EDT-001 | `casos-de-teste/edicao-produto/CT-EST-EDT-001-alterar-estoque-minimo.md` | Documentado |
 | CT-EST-EXC-001 | `casos-de-teste/inativacao-variacao/CT-EST-EXC-001-inativar-variacao.md` | Documentado |
+| CT-EST-EXC-002 | `casos-de-teste/inativacao-variacao/CT-EST-EXC-002-inativar-ultima-variacao-ativa.md` | Documentado |
 | CT-EST-VAR-001 | `casos-de-teste/variacao-produto/CT-EST-VAR-001-vincular-variacoes-mesmo-produto.md` | Documentado |
+| CT-EST-EXC-002 | `casos-de-teste/inativacao-variacao/CT-EST-EXC-002-inativar-ultima-variacao-ativa.md` | Documentado |
+| CT-EST-CAD-005 | `casos-de-teste/cadastro-produto/CT-EST-CAD-005-api-bloquear-nome-abaixo-limite-minimo.md` | Documentado |
 
 ---
 
@@ -350,16 +359,17 @@ A expansão da cobertura deve ser realizada progressivamente, priorizando as reg
 
 A ordem recomendada para evolução da cobertura é:
 
-1. ampliar a cobertura de valores limite da RN-001;
-2. ampliar as validações estruturais da RN-004;
-3. criar cobertura para RN-005 — unicidade de SKU;
-4. criar cobertura para RN-008 — duplicidade de produto, cor e tamanho;
-5. criar cobertura para RN-002 — validação da cor;
-6. criar cobertura para RN-003 — validação do tamanho;
-7. criar cobertura para RN-006 — validação do preço;
-8. criar cobertura para RN-007 — quantidade inicial;
-9. criar cobertura para RN-009 — estoque mínimo;
-10. manter a matriz de rastreabilidade atualizada a cada novo CT ou alteração de regra.
+1. ampliar as validações estruturais da RN-004 — prioridade máxima, há defeito aberto (BUG-004);
+2. replicar na API as condições da RN-001 já cobertas na UI, e automatizar os casos de camada API;
+3. ampliar a cobertura de valores limite da RN-001 na UI;
+4. criar cobertura para RN-005 — unicidade de SKU;
+5. criar cobertura para RN-008 — duplicidade de produto, cor e tamanho;
+6. criar cobertura para RN-002 — validação da cor;
+7. criar cobertura para RN-003 — validação do tamanho;
+8. criar cobertura para RN-006 — validação do preço;
+9. criar cobertura para RN-007 — quantidade inicial;
+10. criar cobertura para RN-009 — estoque mínimo;
+11. manter a matriz de rastreabilidade atualizada a cada novo CT ou alteração de regra.
 
 ---
 

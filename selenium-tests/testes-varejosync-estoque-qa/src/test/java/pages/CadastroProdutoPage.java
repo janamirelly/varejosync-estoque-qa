@@ -13,7 +13,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
  * A tela tem dois modos, cadastro e edição, e é a mesma tela nos dois. Por
  * isso é uma Page só.
  */
-public class CadastroProdutoPage extends BasePage {
+public class
+CadastroProdutoPage extends BasePage {
 
     private static final By INPUT_NOME        = By.id("produtoNome");
     private static final By INPUT_COR         = By.id("produtoCor");

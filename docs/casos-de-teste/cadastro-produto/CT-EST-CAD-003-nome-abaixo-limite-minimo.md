@@ -2,16 +2,16 @@
 
 ## Identificação
 
-* **Módulo:** Estoque
-* **Funcionalidade:** Cadastro de produto
-* **Camada:** UI
-* **Tipo de teste:** Funcional negativo
-* **Técnica de teste:** Análise de Valor Limite
-* **Regra relacionada:** RN-001 — Nome do produto deve ser obrigatório e válido
-* **Critério de aceite relacionado:** CA-001
-* **Ambiente:** Desenvolvimento local
-* **Status:** Passou
-* **Data da execução:** 07/08/2026
+- **Módulo:** Estoque
+- **Funcionalidade:** Cadastro de produto
+- **Camada:** UI
+- **Tipo de teste:** Funcional negativo
+- **Técnica de teste:** Análise de Valor Limite
+- **Regra relacionada:** RN-001 — Nome do produto deve ser obrigatório e válido
+- **Critério de aceite relacionado:** CA-001
+- **Ambiente:** Desenvolvimento local
+- **Status:** Passou
+- **Data da execução:** 07/08/2026
 
 ## Objetivo
 
@@ -19,10 +19,10 @@ Verificar se o sistema impede o cadastro de um produto quando o campo **Nome do 
 
 ## Pré-condições
 
-* Aplicação disponível em ambiente de desenvolvimento local.
-* Backend/API em execução.
-* Tela **Cadastrar Produto** acessível.
-* SKU `CAM-VO-P` não cadastrado previamente no banco de dados.
+- Aplicação disponível em ambiente de desenvolvimento local.
+- Backend/API em execução.
+- Tela **Cadastrar Produto** acessível.
+- SKU `CAM-VO-P` não cadastrado previamente no banco de dados.
 
 ## Massa de teste
 
@@ -48,26 +48,26 @@ Verificar se o sistema impede o cadastro de um produto quando o campo **Nome do 
 
 ## Resultado esperado
 
-* O sistema deve impedir a conclusão do cadastro.
-* O sistema deve exibir a mensagem `Informe um nome de produto válido`.
-* Nenhum registro correspondente ao SKU `CAM-VO-P` deve ser persistido no banco de dados.
+- O sistema deve impedir a conclusão do cadastro.
+- O sistema deve exibir a mensagem `Informe um nome de produto válido`.
+- Nenhum registro correspondente ao SKU `CAM-VO-P` deve ser persistido no banco de dados.
 
 ## Resultado obtido
 
-* O sistema impediu a conclusão do cadastro.
-* A mensagem `Informe um nome de produto válido` foi exibida.
-* A consulta pelo SKU `CAM-VO-P` retornou **0 registros**, confirmando que o produto não foi persistido.
+- O sistema impediu a conclusão do cadastro.
+- A mensagem `Informe um nome de produto válido` foi exibida.
+- A consulta pelo SKU `CAM-VO-P` retornou **0 registros**, confirmando que o produto não foi persistido.
 
 ## Evidências
 
-* **EVD-CT-EST-CAD-003-01 — Pré-condição:** consulta no banco antes da execução, confirmando que o SKU `CAM-VO-P` não estava cadastrado.
+- **EVD-CT-EST-CAD-003-01 — Pré-condição:** consulta no banco antes da execução, confirmando que o SKU `CAM-VO-P` não estava cadastrado.
   [Ver evidência](../../evidencias/ct-est-cad-003/01-pre-condicao-banco.png)
 
-* **EVD-CT-EST-CAD-003-02 — Massa de teste:** formulário preenchido com os dados utilizados na execução.
+- **EVD-CT-EST-CAD-003-02 — Massa de teste:** formulário preenchido com os dados utilizados na execução.
   [Ver evidência](../../evidencias/ct-est-cad-003/02-massa-teste-ui.png)
 
-* **EVD-CT-EST-CAD-003-03 — Validação UI:** sistema bloqueando o cadastro e exibindo a mensagem `Informe um nome de produto válido`.
+- **EVD-CT-EST-CAD-003-03 — Validação UI:** sistema bloqueando o cadastro e exibindo a mensagem `Informe um nome de produto válido`.
   [Ver evidência](../../evidencias/ct-est-cad-003/03-bloqueio-nome-abaixo-minimo.png)
 
-* **EVD-CT-EST-CAD-003-04 — Pós-condição:** consulta no banco após a execução retornando 0 registros para o SKU `CAM-VO-P`.
+- **EVD-CT-EST-CAD-003-04 — Pós-condição:** consulta no banco após a execução retornando 0 registros para o SKU `CAM-VO-P`.
   [Ver evidência](../../evidencias/ct-est-cad-003/04-pos-condicao-banco.png)

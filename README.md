@@ -1,8 +1,8 @@
 # VarejoSync — Módulo de Estoque | Portfólio QA
 
-**Portfólio de Quality Assurance sobre um módulo de gestão de estoque.** Regras de negócio formalizadas, casos de teste rastreáveis da regra até a evidência, três defeitos investigados até a causa raiz no banco de dados e automação de interface em Java.
+**Portfólio de Quality Assurance sobre um módulo de gestão de estoque.** Regras de negócio formalizadas, casos de teste rastreáveis da regra até a evidência, quatro defeitos investigados até a causa raiz no código e no banco de dados, testes de API e automação de interface em Java.
 
-> A aplicação foi construída como **ambiente de estudo**, e o processo de QA aplicado sobre ela do zero: as regras de negócio foram levantadas a partir do comportamento observado, não recebidas prontas. Os defeitos documentados não foram plantados — apareceram durante a execução dos testes.
+> **Escrevi a aplicação e a suíte de testes.** As regras de negócio foram levantadas a partir do comportamento do sistema, não recebidas prontas — e os quatro defeitos documentados não foram plantados: apareceram testando o meu próprio código.
 
 ![Dashboard de estoque do VarejoSync](assets/screenshots/dashboard-estoque.png)
 
@@ -35,7 +35,9 @@
 
 O **VarejoSync** é uma aplicação web de gestão de varejo. Este repositório documenta o trabalho de QA sobre o seu **módulo de estoque**: um ciclo completo de qualidade, do entendimento da regra de negócio até a automação do cenário e o registro da evidência.
 
-**É um laboratório de estudo, e isso define o escopo.** A aplicação existe para servir de alvo de testes. Não havia especificação pronta nem área de produto para consultar: cada regra de negócio foi levantada a partir do comportamento observado no sistema, escrita, transformada em critério de aceite e só então em caso de teste. Os três defeitos documentados apareceram durante essa execução — foram investigados até a causa no banco, corrigidos e retestados.
+**Escrevi a aplicação e a suíte de testes, e isso define o escopo do trabalho.** Não havia especificação pronta nem área de produto para consultar: cada regra de negócio foi levantada a partir do comportamento observado no sistema, escrita, transformada em critério de aceite e só então em caso de teste.
+
+Os quatro defeitos documentados apareceram testando o meu próprio código, e foram investigados até a causa antes de serem tratados — três já corrigidos e retestados, um ainda aberto. Testar o que se construiu exige sair da cabeça de quem escreveu a regra e entrar na de quem procura onde ela não se sustenta — é a parte do trabalho que este repositório registra com mais detalhe.
 
 O que este portfólio demonstra:
 
@@ -43,7 +45,8 @@ O que este portfólio demonstra:
 - **Desenho de casos de teste** — cenários positivos, negativos e de integridade de dados, documentados com pré-condições, massa, passos e resultado esperado;
 - **Investigação de defeitos** — três bugs encontrados, analisados através de interface, backend e banco, corrigidos e retestados;
 - **Automação de interface** — 10 casos automatizados em Java, Selenium e JUnit, com validação de persistência via SQL;
-- **Rastreabilidade** — cada teste tem origem em uma regra e destino em uma evidência.
+- **Rastreabilidade** — cada teste tem origem em uma regra e destino em uma evidência;
+- **Visão das duas pontas** — o mesmo repositório traz a aplicação (HTML, JavaScript, Node.js, SQLite) e a suíte que a testa.
 
 A prioridade do projeto é **cobertura consistente e comprovada**, não cobertura ampla. Os gaps estão registrados abertamente na [matriz de cobertura](./docs/cobertura-testes.md).
 
@@ -110,7 +113,7 @@ Backend / API
 Banco de dados
 ```
 
-Essa descida é o que diferencia "a tela mostrou sucesso" de "a operação realmente aconteceu". Ela é usada nos cenários de persistência, edição, vínculo entre produto e variações e inativação lógica — e foi ela que revelou os três defeitos da seção seguinte.
+Essa descida é o que diferencia "a tela mostrou sucesso" de "a operação realmente aconteceu". Ela é usada nos cenários de persistência, edição, vínculo entre produto e variações e inativação lógica — e foi ela que revelou os três primeiros defeitos da seção seguinte.
 
 A especificação funcional fica separada dos casos de teste:
 
@@ -127,13 +130,14 @@ A especificação funcional fica separada dos casos de teste:
 
 ## 4. Defeitos encontrados
 
-Três defeitos de integridade de dados foram identificados, investigados até a causa no banco, corrigidos e retestados.
+Quatro defeitos de integridade de dados foram identificados e investigados até a causa. Três foram corrigidos e retestados; o BUG-004 permanece aberto.
 
 | ID | Defeito | Severidade | Status |
 | --- | --- | --- | --- |
 | [BUG-001](./docs/bugs/bug-001-variacoes-mesmo-produto-ids-distintos.md) | Variações do mesmo produto vinculadas a produtos distintos | Alta | Fechado |
 | [BUG-002](./docs/bugs/bug-002-inativacao-variacao-inativa-produto.md) | Inativar uma variação inativava o produto inteiro | Alta | Fechado |
 | [BUG-003](./docs/bugs/bug-003-exclusao-massa-inativa-produto-com-variacoes-ativas.md) | Exclusão em massa inativava produto com variações ainda ativas | Alta | Fechado |
+| [BUG-004](./docs/bugs/bug-004-api-aceita-sku-fora-padrao-rn-004.md) | API aceita SKU fora do padrão estrutural da RN-004 | Alta | **Aberto** |
 
 ### BUG-002 — Inativação de uma variação afetava o produto inteiro
 
@@ -304,7 +308,7 @@ Entre as validações realizadas:
 - vínculo entre variações e produto (`id_produto` compartilhado, `id_variacao` distintos);
 - estado lógico dos registros após uma inativação.
 
-Os três defeitos da seção 4 foram identificados por esse caminho — nenhum deles seria visível olhando apenas a tela.
+Os três primeiros defeitos da seção 4 foram identificados por esse caminho — nenhum deles seria visível olhando apenas a tela. O BUG-004 veio por outra via: chamada direta à API, onde o defeito estava visível na própria resposta.
 
 ---
 
@@ -316,9 +320,10 @@ Os três defeitos da seção 4 foram identificados por esse caminho — nenhum d
 | Critérios de Aceite formalizados | 14 |
 | RNs com pelo menos um CT executado | 7 de 14 |
 | Cobertura por RN | 50% |
-| Casos de teste funcionais catalogados | 8 |
+| Casos de teste funcionais catalogados | 9 |
 | Casos funcionais automatizados | 8 |
-| Casos funcionais documentados | 8 |
+| Casos de teste por camada | 8 UI · 1 API |
+| Casos funcionais documentados | 9 |
 | Testes de navegação / smoke | 2 |
 | Total de testes automatizados | 10 |
 
@@ -361,7 +366,7 @@ Cada caso de teste registra objetivo, pré-condições, massa, passos, resultado
 | Selenium WebDriver | automação da interface |
 | JUnit | execução e assertions |
 | SQL / SQLite | validação de persistência e investigação |
-| Postman | apoio em validações de API REST |
+| Postman | execução dos casos de teste de camada API |
 | IntelliJ IDEA | desenvolvimento dos testes |
 | Git / GitHub | versionamento e documentação |
 
@@ -411,6 +416,6 @@ A prioridade atual é manter a cobertura existente **consistente, rastreável e 
 
 ---
 
-**Jana Mirelly** — Quality Assurance
+**Janayna Mirelly** — Quality Assurance
 
 [LinkedIn](https://www.linkedin.com/in/janayna-mirelly-dev)

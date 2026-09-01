@@ -119,7 +119,7 @@ docs/evidencias/
 
 * **EVD-CT-EST-CAD-004-01 — Pré-condição no banco:** consulta realizada antes da
   execução, confirmando que o SKU `CAM-VO-G` não estava cadastrado.
-  [Ver evidência](../../evidencias/ct-est-cad-004/01-pre-condicao-banco.png)
+  [Ver evidência](./evidencias/ct-est-cad-004/01-pre-condicao-banco.png)
 ```
 
 Cada item traz: **identificador**, **o que a imagem prova** e o **link**. A descrição precisa dizer o que a imagem demonstra, não o que ela mostra — *"confirmando que o SKU não estava cadastrado"* vale mais que *"print da consulta"*.
