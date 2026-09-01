@@ -330,7 +330,6 @@ Os dois cenários estão automatizados e foram executados com sucesso.
 | CT-EST-EXC-001 | `casos-de-teste/inativacao-variacao/CT-EST-EXC-001-inativar-variacao.md` | Documentado |
 | CT-EST-EXC-002 | `casos-de-teste/inativacao-variacao/CT-EST-EXC-002-inativar-ultima-variacao-ativa.md` | Documentado |
 | CT-EST-VAR-001 | `casos-de-teste/variacao-produto/CT-EST-VAR-001-vincular-variacoes-mesmo-produto.md` | Documentado |
-| CT-EST-EXC-002 | `casos-de-teste/inativacao-variacao/CT-EST-EXC-002-inativar-ultima-variacao-ativa.md` | Documentado |
 | CT-EST-CAD-005 | `casos-de-teste/cadastro-produto/CT-EST-CAD-005-api-bloquear-nome-abaixo-limite-minimo.md` | Documentado |
 
 ---

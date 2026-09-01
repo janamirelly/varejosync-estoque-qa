@@ -121,7 +121,7 @@ A especificação funcional fica separada dos casos de teste:
 | --- | --- |
 | [Regras de negócio — Cadastro de produto](./docs/regras-negocio/cadastro-produto.md) | RN-001 a RN-012 |
 | [Regra — Inativação de variação](./docs/regras-negocio/inativacao-variacao.md) | RN-013 |
-| [Regra — Consistência de estado entre produto e variações](./docs/regras-negocio/consistência-de-estado-entre-produto-e-variações.md) | RN-014 |
+| [Regra — Consistência de estado entre produto e variações](./docs/regras-negocio/consistencia-de-estado-entre-produto-e-variacoes.md) | RN-014 |
 | [Critérios de aceite — Cadastro](./docs/criterios-aceite/cadastro-produto.md) | CA-001 a CA-012 |
 | [Critério — Inativação de variação](./docs/criterios-aceite/inativacao-variacao.md) | CA-013 |
 | [Critério — Consistência de estado entre produto e variações](./docs/criterios-aceite/consistencia-estado-produto-variacoes.md) | CA-014 |

@@ -115,7 +115,7 @@ Se qualquer uma dessas condições não for atendida, o cenário deve ser consid
 
 | Artefato | Referência |
 | --- | --- |
-| Regra de negócio | [RN-014 — Consistência de estado entre produto e variações](../regras-negocio/consistência-de-estado-entre-produto-e-variações.md) |
+| Regra de negócio | [RN-014 — Consistência de estado entre produto e variações](../regras-negocio/consistencia-de-estado-entre-produto-e-variacoes.md) |
 | Defeito de origem | [BUG-003 — Exclusão em massa pode inativar produto com variações ainda ativas](../bugs/bug-003-exclusao-massa-inativa-produto-com-variacoes-ativas.md) |
 | Critério complementar | CA-013 — Inativar somente a variação selecionada |
 | Caso de teste | pendente — `CT-EST-EXC-002` |
