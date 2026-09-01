@@ -1,0 +1,13 @@
+# Normalizacao de fim de linha.
+# Sem isto, salvar um arquivo em editor Windows converte para CRLF e o git
+# passa a ver o arquivo inteiro como modificado.
+* text=auto eol=lf
+
+# Binarios: nunca converter
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.ico binary
+*.db  binary
