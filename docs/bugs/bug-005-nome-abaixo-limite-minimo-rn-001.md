@@ -21,10 +21,10 @@ Reprodutível apenas em commits anteriores à correção: `git checkout b142f22^
 
 ```json
 {
-  "nome": "CB",
-  "cor": "PRETO",
-  "tamanho": "M",
-  "sku": "CAM-PRETO-M",
+  "nome": "CA",
+  "cor": "VINHO",
+  "tamanho": "G",
+  "sku": "CAM-VINHO-G",
   "tipo": "ENTRADA",
   "observacao": "",
   "preco": 59.90,
@@ -40,7 +40,7 @@ Reprodutível apenas em commits anteriores à correção: `git checkout b142f22^
 | **Esperado** | `400 Bad Request`, nome rejeitado, nada persistido |
 | **Obtido** | `201 Created`, produto persistido com nome de 2 caracteres |
 
-`CB` tem 2 caracteres. A RN-001 exige entre 3 e 30.
+`CA` tem 2 caracteres. A RN-001 exige entre 3 e 30. É a mesma massa do `CT-EST-CAD-005`, para que o antes e o depois da correção sejam comparáveis requisição a requisição.
 
 ## Impacto
 
@@ -83,7 +83,7 @@ if (!nome) {
 }
 ```
 
-`"CB"` é uma string não vazia. Passa.
+`"CA"` é uma string não vazia. Passa.
 
 Não era o caso de "validação apenas no frontend": `validarFormularioProduto()`, em `frontend/js/app.js`, fazia a mesma verificação de preenchimento. As duas camadas tinham a mesma lacuna.
 
