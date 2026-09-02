@@ -8,7 +8,7 @@
 
 | Regras de negócio | Testes automatizados | Defeitos investigados | Evidências |
 | :---: | :---: | :---: | :---: |
-| **14** | **10** | **5** | **41** |
+| **14** | **10** | **5** | **44** |
 
 `Java` · `Selenium WebDriver` · `JUnit` · `SQL / SQLite` · `Node.js` · `Git`
 
@@ -343,7 +343,7 @@ docs/
 ├── criterios-aceite/    CA-001 a CA-014
 ├── casos-de-teste/      9 casos funcionais documentados
 ├── bugs/                BUG-001 a BUG-005
-├── evidencias/          41 registros de execução
+├── evidencias/          44 registros de execução
 └── cobertura-testes.md  matriz RN → CA → CT
 ```
 

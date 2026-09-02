@@ -1,6 +1,6 @@
 # BUG-005 — Nome de produto abaixo do limite mínimo é aceito no cadastro e na edição
 
-> **Registro retroativo.** Este defeito foi encontrado em junho de 2026 e corrigido no mesmo mês, antes de o repositório adotar o padrão de documentação de defeitos. O identificador segue a ordem de documentação, não a de descoberta: cronologicamente, este é o primeiro defeito do projeto. Foi registrado em 02/09/2026 para que a correção tivesse rastreabilidade até o achado que a originou.
+> **Registro retroativo.** Este defeito foi encontrado em maio de 2026 e corrigido em junho, antes de o repositório adotar o padrão de documentação de defeitos. O identificador segue a ordem de documentação, não a de descoberta: cronologicamente, este é o primeiro defeito do projeto. Foi registrado em 02/09/2026 para que a correção tivesse rastreabilidade até o achado que a originou.
 
 | | |
 | --- | --- |
@@ -9,7 +9,7 @@
 | **Ambiente** | Desenvolvimento local |
 | **Camada** | API — cadastro e edição de produto · UI — formulário de cadastro |
 | **Regra** | RN-001 — Nome do produto deve ser obrigatório e válido |
-| **Encontrado em** | Teste exploratório de API · junho/2026 |
+| **Encontrado em** | Teste exploratório em três camadas · 15/05/2026, reproduzido em 18/05 |
 | **Corrigido em** | Commit `b142f22` · 26/06/2026 |
 | **Retestado em** | `CT-EST-CAD-005` (API) e `CT-EST-CAD-003` (UI) |
 
@@ -21,14 +21,12 @@ Reprodutível apenas em commits anteriores à correção: `git checkout b142f22^
 
 ```json
 {
-  "nome": "CA",
-  "cor": "VINHO",
-  "tamanho": "G",
-  "sku": "CAM-VINHO-G",
-  "tipo": "ENTRADA",
-  "observacao": "",
+  "nome": "CB",
+  "cor": "ROXA",
+  "tamanho": "P",
+  "sku": "CAM-ROXA-P",
   "preco": 59.90,
-  "quantidade": 2,
+  "quantidade": 0,
   "estoque_min": 10
 }
 ```
@@ -38,9 +36,9 @@ Reprodutível apenas em commits anteriores à correção: `git checkout b142f22^
 | | |
 | --- | --- |
 | **Esperado** | `400 Bad Request`, nome rejeitado, nada persistido |
-| **Obtido** | `201 Created`, produto persistido com nome de 2 caracteres |
+| **Obtido** | `201 Created` em 26 ms, 511 B — produto `id_produto 40` e variação `id_variacao 57` persistidos com `ativo = 1` |
 
-`CA` tem 2 caracteres. A RN-001 exige entre 3 e 30. É a mesma massa do `CT-EST-CAD-005`, para que o antes e o depois da correção sejam comparáveis requisição a requisição.
+`CB` tem 2 caracteres. A RN-001 exige entre 3 e 30. Este é o payload exato do achado original; o reteste posterior usa `CA` com a massa do `CT-EST-CAD-005`, e os dois valem porque violam o mesmo limite.
 
 ## Impacto
 
@@ -50,13 +48,19 @@ Pelo mesmo caminho passavam nomes formados apenas por números ou por caracteres
 
 ## Evidência
 
-**O registro original da resposta `201 Created` não foi capturado.** O achado é anterior ao padrão de evidências do projeto e a requisição que o produziu não foi salva em collection. A comprovação disponível hoje é indireta:
+O achado foi registrado nas três camadas no momento em que ocorreu:
 
-- o código anterior à correção, onde a única verificação sobre o nome é de campo vazio — `git show b142f22^:backend/src/controllers/produtos.controller.js`;
-- o diff da correção, que introduz exatamente as condições ausentes — `git show b142f22`;
-- a evidência do reteste posterior à correção — `docs/evidencias/ct-est-cad-005/01-post-produtos-nome-2-caracteres-400.png`.
+| Camada | O que prova | Arquivo |
+| --- | --- | --- |
+| API | `201 Created` · 26 ms · 511 B, e o corpo da resposta devolvendo `id_produto 40`, `nome "CB"`, `ativo 1` e `id_variacao 57` | [01](../evidencias/bug-005/01-api-post-produtos-nome-2-caracteres-201.png) |
+| Front | o formulário aceitou `CB` no campo Nome do produto e não bloqueou o envio | [02](../evidencias/bug-005/02-front-formulario-nao-bloqueou.png) |
+| Banco | `SELECT * FROM produto WHERE nome = 'CB'` retornou duas linhas — `id_produto 40` (15/05/2026 23:17) e `id_produto 42` (18/05/2026 11:51), ambas com `ativo = 1` | [03](../evidencias/bug-005/03-banco-produto-cb-persistido.png) |
 
-Registrar essa ausência é parte do defeito: achado sem requisição salva não é reproduzível por terceiros.
+A evidência de banco é a que fecha o caso: o defeito não parou na resposta da API, o dado inválido chegou à base e ficou.
+
+O reteste posterior à correção está em `docs/evidencias/ct-est-cad-005/01-post-produtos-nome-2-caracteres-400.png`, e o antes e o depois do código podem ser comparados com `git show b142f22`.
+
+> **Sobre estas três imagens.** São os cards de evidência publicados originalmente, recuperados e trazidos para o repositório em 02/09/2026. O card 01 estampa "RN01: nome do produto deve ter de 3 a 80 caracteres" — valor incorreto, citado de memória na época; a RN-001 sempre exigiu entre 3 e 30. O defeito vale nas duas leituras, porque 2 é menor que 3 em ambas. A imagem foi mantida como está por ser o registro do que de fato foi observado e publicado; a correção fica declarada aqui e no próprio post.
 
 ---
 ---
@@ -136,4 +140,4 @@ Os dois passam. A validação está no backend, e não apenas no formulário —
 
 - Os limites exatos da regra, 3 e 30 caracteres, não têm caso de teste. Estão declarados como planejados na matriz de cobertura, e são os valores onde a comparação costuma trocar `>=` por `>`.
 - A condição "conter pelo menos uma letra" não tem caso de teste próprio.
-- Saneamento: verificar se há nomes fora do padrão persistidos na base antes de `b142f22`.
+- Saneamento: a evidência de banco já mostra dois registros inválidos remanescentes — `id_produto 40` e `id_produto 42`, ambos com `nome = "CB"` e `ativo = 1`. Não foram saneados, e a exclusão do sistema é lógica: continuam na base. Verificar se há outros nomes fora do padrão anteriores a `b142f22`.
