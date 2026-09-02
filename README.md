@@ -1,14 +1,14 @@
 # VarejoSync — Módulo de Estoque | Portfólio QA
 
-**Portfólio de Quality Assurance sobre um módulo de gestão de estoque.** Regras de negócio formalizadas, casos de teste rastreáveis da regra até a evidência, quatro defeitos investigados até a causa raiz no código e no banco de dados, testes de API e automação de interface em Java.
+**Portfólio de Quality Assurance sobre um módulo de gestão de estoque.** Regras de negócio formalizadas, casos de teste rastreáveis da regra até a evidência, cinco defeitos investigados até a causa raiz no código e no banco de dados, testes de API e automação de interface em Java.
 
-> **Escrevi a aplicação e a suíte de testes.** As regras de negócio foram levantadas a partir do comportamento do sistema, não recebidas prontas — e os quatro defeitos documentados não foram plantados: apareceram testando o meu próprio código.
+> **Escrevi a aplicação e a suíte de testes.** As regras de negócio foram levantadas a partir do comportamento do sistema, não recebidas prontas — e os cinco defeitos documentados não foram plantados: apareceram testando o meu próprio código.
 
 ![Dashboard de estoque do VarejoSync](assets/screenshots/dashboard-estoque.png)
 
 | Regras de negócio | Testes automatizados | Defeitos investigados | Evidências |
 | :---: | :---: | :---: | :---: |
-| **14** | **10** | **3** | **38** |
+| **14** | **10** | **5** | **41** |
 
 `Java` · `Selenium WebDriver` · `JUnit` · `SQL / SQLite` · `Node.js` · `Git`
 
@@ -21,7 +21,7 @@
 | 1 | [O que é este projeto](#1-o-que-é-este-projeto) | contexto em 30 segundos |
 | 2 | [O sistema testado](#2-o-sistema-testado) | telas e funcionalidades |
 | 3 | [Como eu testo](#3-como-eu-testo) | a estratégia e a rastreabilidade |
-| 4 | [Defeitos encontrados](#4-defeitos-encontrados) | 3 bugs, da investigação ao reteste |
+| 4 | [Defeitos encontrados](#4-defeitos-encontrados) | 5 defeitos — quatro retestados, um em aberto |
 | 5 | [Automação de testes](#5-automação-de-testes) | arquitetura do código e como rodar |
 | 6 | [Validação em banco de dados](#6-validação-em-banco-de-dados) | o que a interface não prova |
 | 7 | [Cobertura atual](#7-cobertura-atual) | números e o que ainda falta |
@@ -37,13 +37,13 @@ O **VarejoSync** é uma aplicação web de gestão de varejo. Este repositório 
 
 **Escrevi a aplicação e a suíte de testes, e isso define o escopo do trabalho.** Não havia especificação pronta nem área de produto para consultar: cada regra de negócio foi levantada a partir do comportamento observado no sistema, escrita, transformada em critério de aceite e só então em caso de teste.
 
-Os quatro defeitos documentados apareceram testando o meu próprio código, e foram investigados até a causa antes de serem tratados — três já corrigidos e retestados, um ainda aberto. Testar o que se construiu exige sair da cabeça de quem escreveu a regra e entrar na de quem procura onde ela não se sustenta — é a parte do trabalho que este repositório registra com mais detalhe.
+Os cinco defeitos documentados apareceram testando o meu próprio código, e foram investigados até a causa antes de serem tratados — quatro já corrigidos e retestados, um ainda aberto. Testar o que se construiu exige sair da cabeça de quem escreveu a regra e entrar na de quem procura onde ela não se sustenta — é a parte do trabalho que este repositório registra com mais detalhe.
 
 O que este portfólio demonstra:
 
 - **Análise funcional** — 14 regras de negócio e 14 critérios de aceite formalizados a partir do comportamento do sistema;
 - **Desenho de casos de teste** — cenários positivos, negativos e de integridade de dados, documentados com pré-condições, massa, passos e resultado esperado;
-- **Investigação de defeitos** — três bugs encontrados, analisados através de interface, backend e banco, corrigidos e retestados;
+- **Investigação de defeitos** — cinco bugs encontrados, analisados através de interface, backend e banco — quatro corrigidos e retestados, um ainda aberto;
 - **Automação de interface** — 10 casos automatizados em Java, Selenium e JUnit, com validação de persistência via SQL;
 - **Rastreabilidade** — cada teste tem origem em uma regra e destino em uma evidência;
 - **Visão das duas pontas** — o mesmo repositório traz a aplicação (HTML, JavaScript, Node.js, SQLite) e a suíte que a testa.
@@ -130,7 +130,7 @@ A especificação funcional fica separada dos casos de teste:
 
 ## 4. Defeitos encontrados
 
-Quatro defeitos de integridade de dados foram identificados e investigados até a causa. Três foram corrigidos e retestados; o BUG-004 permanece aberto.
+Cinco defeitos de integridade de dados foram identificados e investigados até a causa. Quatro foram corrigidos e retestados; o BUG-004 permanece aberto.
 
 | ID | Defeito | Severidade | Status |
 | --- | --- | --- | --- |
@@ -138,6 +138,7 @@ Quatro defeitos de integridade de dados foram identificados e investigados até 
 | [BUG-002](./docs/bugs/bug-002-inativacao-variacao-inativa-produto.md) | Inativar uma variação inativava o produto inteiro | Alta | Fechado |
 | [BUG-003](./docs/bugs/bug-003-exclusao-massa-inativa-produto-com-variacoes-ativas.md) | Exclusão em massa inativava produto com variações ainda ativas | Alta | Fechado |
 | [BUG-004](./docs/bugs/bug-004-api-aceita-sku-fora-padrao-rn-004.md) | API aceita SKU fora do padrão estrutural da RN-004 | Alta | **Aberto** |
+| [BUG-005](./docs/bugs/bug-005-nome-abaixo-limite-minimo-rn-001.md) | Nome abaixo do limite mínimo aceito no cadastro e na edição | Média | Fechado |
 
 ### BUG-002 — Inativação de uma variação afetava o produto inteiro
 
@@ -308,7 +309,7 @@ Entre as validações realizadas:
 - vínculo entre variações e produto (`id_produto` compartilhado, `id_variacao` distintos);
 - estado lógico dos registros após uma inativação.
 
-Os três primeiros defeitos da seção 4 foram identificados por esse caminho — nenhum deles seria visível olhando apenas a tela. O BUG-004 veio por outra via: chamada direta à API, onde o defeito estava visível na própria resposta.
+Os três primeiros defeitos da seção 4 foram identificados por esse caminho — nenhum deles seria visível olhando apenas a tela. O BUG-004 e o BUG-005 vieram por outra via: chamada direta à API, onde o defeito estava visível na própria resposta.
 
 ---
 
@@ -340,9 +341,9 @@ docs/
 │
 ├── regras-negocio/      RN-001 a RN-014
 ├── criterios-aceite/    CA-001 a CA-014
-├── casos-de-teste/      7 casos funcionais documentados
-├── bugs/                BUG-001, BUG-002, BUG-003
-├── evidencias/          38 registros de execução
+├── casos-de-teste/      9 casos funcionais documentados
+├── bugs/                BUG-001 a BUG-005
+├── evidencias/          41 registros de execução
 └── cobertura-testes.md  matriz RN → CA → CT
 ```
 

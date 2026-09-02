@@ -13,7 +13,7 @@
 - **Automação:** Não — execução manual via Postman
 - **Status:** Passou
 - **Data da última execução:** 31/08/2026
-- **Defeito relacionado:** Nenhum
+- **Defeito relacionado:** BUG-005 — Corrigido e retestado
 
 ## Objetivo
 

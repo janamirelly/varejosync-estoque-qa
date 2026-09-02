@@ -12,6 +12,7 @@
 - **Ambiente:** Desenvolvimento local
 - **Status:** Passou
 - **Data da execução:** 07/08/2026
+- **Defeito relacionado:** BUG-005 — Corrigido e retestado
 
 ## Objetivo
 
