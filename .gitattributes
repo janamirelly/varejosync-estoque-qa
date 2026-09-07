@@ -11,28 +11,3 @@
 *.pdf binary
 *.ico binary
 *.db  binary
-
-# ---------------------------------------------------------------------------
-# Linguagem exibida pelo GitHub
-#
-# O GitHub decide a "linguagem do repositorio" contando BYTES de codigo, nao
-# relevancia. Aqui a aplicacao pesa mais que a suite de testes:
-#
-#   frontend/  ~53 KB de JavaScript + 27 KB de HTML + 55 KB de CSS
-#   backend/   ~55 KB de JavaScript
-#   selenium-tests/  ~65 KB de Java
-#
-# Somando, JavaScript passa Java, e o cartao do repositorio no perfil sai
-# marcado como JavaScript — a linguagem que este repositorio NAO usa para
-# testar.
-#
-# linguist-vendored marca um caminho como "codigo que esta no repositorio mas
-# nao e o assunto dele". Os arquivos continuam versionados e navegaveis
-# normalmente; so deixam de entrar na contagem de linguagem.
-#
-# Aqui isso e verdade: frontend/ e backend/ sao o sistema sob teste. O assunto
-# do repositorio e a suite em selenium-tests/. Com as duas pastas fora da
-# contagem, sobra o Java e o cartao passa a exibir Java.
-# ---------------------------------------------------------------------------
-frontend/** linguist-vendored
-backend/**  linguist-vendored
