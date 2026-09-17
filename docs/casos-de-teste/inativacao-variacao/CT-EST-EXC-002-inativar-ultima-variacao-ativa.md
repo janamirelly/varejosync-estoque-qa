@@ -173,4 +173,15 @@ Este caso de teste não valida:
 | --- | --- | --- |
 | 28/08/2026 — primeira execução | Passou | Caso criado a partir do CA-014, após a formalização da RN-014 |
 
-A evidência deste caso é a própria execução automatizada. Diferente dos casos retestados manualmente após defeito, não há captura de tela associada: a verificação de integridade da base é uma consulta SQL executada dentro do teste, e o resultado é registrado pelo JUnit.
+## Evidência da execução
+
+A verificação de integridade é uma consulta SQL executada dentro do próprio teste e avaliada pelo JUnit, não um passo manual. Por isso a evidência deste caso é o registro da execução automatizada, e não uma captura de tela dos passos.
+
+- **EVD-CT-EST-EXC-002-01 — Resumo da suíte:** execução de 16/09/2026, 10 testes, nenhuma falha. A classe `ExclusaoProdutoTest` registra 2 testes, correspondentes ao `CT-EST-EXC-001` e a este caso.  
+  [Ver resumo](../../evidencias/execucao-automatizada/resumo-execucao-2026-09-16.txt)
+
+- **EVD-CT-EST-EXC-002-02 — Relatório detalhado:** saída do Surefire com o nome do método, o tempo de execução e o status.  
+  [Ver relatório](../../evidencias/execucao-automatizada/TEST-tests.ExclusaoProdutoTest.xml)
+
+- **EVD-CT-EST-EXC-002-03 — Consulta de integridade na base:** execução da mesma consulta que identificou o BUG-003, retornando `0` em 16/09/2026. Nenhuma variação ativa vinculada a produto inativo na base de desenvolvimento.  
+  [Ver evidência](../../evidencias/execucao-automatizada/02-consulta-integridade-zero.png)
