@@ -60,7 +60,7 @@ A evidência de banco é a que fecha o caso: o defeito não parou na resposta da
 
 O reteste posterior à correção está em `docs/evidencias/ct-est-cad-005/01-post-produtos-nome-2-caracteres-400.png`, e o antes e o depois do código podem ser comparados com `git show b142f22`.
 
-> **Sobre estas três imagens.** São os cards de evidência publicados originalmente, recuperados e trazidos para o repositório em 02/09/2026. O card 01 estampa "RN01: nome do produto deve ter de 3 a 80 caracteres" — valor incorreto, citado de memória na época; a RN-001 sempre exigiu entre 3 e 30. O defeito vale nas duas leituras, porque 2 é menor que 3 em ambas. A imagem foi mantida como está por ser o registro do que de fato foi observado e publicado; a correção fica declarada aqui e no próprio post.
+> **Sobre estas três imagens.** São os cards de evidência publicados originalmente, recuperados e trazidos para o repositório em 02/09/2026. O card 01 estampa "RN01: nome do produto deve ter de 3 a 80 caracteres", que era a regra na época. Durante os testes, o máximo foi reduzido para 30, valor implementado na correção (`b142f22`) e registrado na RN-001. O defeito vale nas duas versões, porque 2 é menor que 3 em ambas. A imagem foi mantida como está por ser o registro do que de fato foi observado e publicado.
 
 ---
 ---

@@ -2,7 +2,7 @@
 
 **Portfólio de Quality Assurance sobre um módulo de gestão de estoque.** Regras de negócio formalizadas, casos de teste rastreáveis da regra até a evidência, cinco defeitos investigados até a causa raiz no código e no banco de dados, testes de API e automação de interface em Java.
 
-> **Escrevi a aplicação e a suíte de testes.** As regras de negócio foram levantadas a partir do comportamento do sistema, não recebidas prontas — e os cinco defeitos documentados não foram plantados: apareceram testando o meu próprio código.
+> **Escrevi a aplicação e a suíte de testes.** As regras de negócio não vieram prontas: algumas escrevi antes de testar; outras levantei a partir do comportamento do sistema, decidindo o que ele deveria fazer. Os cinco defeitos documentados não foram plantados: apareceram testando o meu próprio código.
 
 ![Dashboard de estoque do VarejoSync](assets/screenshots/dashboard-estoque.png)
 
@@ -35,13 +35,13 @@
 
 O **VarejoSync** é uma aplicação web de gestão de varejo. Este repositório documenta o trabalho de QA sobre o seu **módulo de estoque**: um ciclo completo de qualidade, do entendimento da regra de negócio até a automação do cenário e o registro da evidência.
 
-**Escrevi a aplicação e a suíte de testes, e isso define o escopo do trabalho.** Não havia especificação pronta nem área de produto para consultar: cada regra de negócio foi levantada a partir do comportamento observado no sistema, escrita, transformada em critério de aceite e só então em caso de teste.
+**Escrevi a aplicação e a suíte de testes, e isso define o escopo do trabalho.** Não havia especificação pronta nem área de produto para consultar. Algumas regras eu escrevi antes de testar; outras levantei a partir do comportamento observado no sistema, decidindo o que ele deveria fazer — onde ele fazia diferente, registrei defeito. Em todos os casos, a regra foi escrita, transformada em critério de aceite e só então em caso de teste.
 
 Os cinco defeitos documentados apareceram testando o meu próprio código, e foram investigados até a causa antes de serem tratados — quatro já corrigidos e retestados, um ainda aberto. Testar o que se construiu exige sair da cabeça de quem escreveu a regra e entrar na de quem procura onde ela não se sustenta — é a parte do trabalho que este repositório registra com mais detalhe.
 
 O que este portfólio demonstra:
 
-- **Análise funcional** — 14 regras de negócio e 14 critérios de aceite formalizados a partir do comportamento do sistema;
+- **Análise funcional** — 14 regras de negócio e 14 critérios de aceite formalizados, parte antes dos testes e parte a partir do comportamento do sistema;
 - **Desenho de casos de teste** — cenários positivos, negativos e de integridade de dados, documentados com pré-condições, massa, passos e resultado esperado;
 - **Investigação de defeitos** — cinco bugs encontrados, analisados através de interface, backend e banco — quatro corrigidos e retestados, um ainda aberto;
 - **Automação de interface** — 10 casos automatizados em Java, Selenium e JUnit, com validação de persistência via SQL;
