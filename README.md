@@ -12,6 +12,12 @@ Portfólio de QA sobre o módulo de estoque de uma aplicação web de varejo. Te
 
 `Java` · `Selenium WebDriver` · `JUnit` · `SQL / SQLite` · `Postman` · `Node.js` · `Git`
 
+**Para começar:**
+
+- [Matriz de cobertura](./docs/cobertura-testes.md): o que existe e o que falta;
+- [CT-EST-CAD-004: cadastrar produto válido](./docs/casos-de-teste/cadastro-produto/CT-EST-CAD-004-cadastrar-produto-valido.md): um caso de teste completo;
+- [BUG-002: inativação indevida do produto](./docs/bugs/bug-002-inativacao-variacao-inativa-produto.md): uma investigação completa.
+
 ---
 
 ## Índice
@@ -20,12 +26,9 @@ Portfólio de QA sobre o módulo de estoque de uma aplicação web de varejo. Te
 2. [O sistema testado](#2-o-sistema-testado)
 3. [Como eu testo](#3-como-eu-testo)
 4. [Defeitos encontrados](#4-defeitos-encontrados)
-5. [Automação de testes](#5-automação-de-testes)
-6. [Validação em banco de dados](#6-validação-em-banco-de-dados)
-7. [Cobertura atual](#7-cobertura-atual)
-8. [Documentação completa](#8-documentação-completa)
-9. [Tecnologias](#9-tecnologias)
-10. [Próximos passos](#10-próximos-passos)
+5. [Automação de testes](#5-automação-de-testes) · [como executar](#como-executar)
+6. [Tecnologias](#6-tecnologias)
+7. [Cobertura e próximos passos](#7-cobertura-e-próximos-passos)
 
 ---
 
@@ -52,10 +55,6 @@ Preferi cobrir menos regras e comprovar cada uma. O que ainda falta está na [ma
 
 O módulo de estoque permite cadastrar produtos com variações (cor e tamanho), consultar saldos, editar parâmetros de reposição e inativar variações individualmente.
 
-### Dashboard de estoque
-
-![Dashboard de estoque do VarejoSync](assets/screenshots/dashboard-estoque.png)
-
 ### Consulta de estoque
 
 ![Consulta de produtos, variações e saldos](assets/screenshots/consulta-estoque.png)
@@ -63,19 +62,6 @@ O módulo de estoque permite cadastrar produtos com variações (cor e tamanho),
 ### Cadastro de produto
 
 ![Cadastro de produto e variação](assets/screenshots/cadastro-produto.png)
-
-### Funcionalidades validadas
-
-| Área | Cobertura desenvolvida |
-| --- | --- |
-| Cadastro | nome obrigatório, limite mínimo e cadastro com dados válidos |
-| SKU | obrigatoriedade do campo |
-| Edição | alteração e persistência do estoque mínimo |
-| Produto / variações | vínculo de múltiplas variações ao mesmo produto |
-| Inativação | inativação lógica somente da variação selecionada |
-| Banco de dados | persistência, estado dos registros e relacionamento entre entidades |
-| Navegação | tela inicial e acesso ao cadastro pelo menu |
-| Investigação de defeitos | análise de comportamento entre UI, backend e banco |
 
 > A aplicação roda em ambiente de desenvolvimento local. As evidências mostram o que foi validado na interface e no banco de dados.
 
@@ -89,18 +75,44 @@ Cada caso de teste parte de uma regra de negócio e termina numa evidência:
 Regra de negócio → Critério de aceite → Caso de teste → Execução → Esperado x obtido → Evidência
 ```
 
-Quando a tela não basta para saber se a operação deu certo, confiro também a API e o banco de dados. Faço isso nos cenários de persistência, edição, vínculo entre produto e variações e inativação.
+### Validação no banco de dados
 
-As regras e os critérios ficam em documentos separados dos casos de teste:
+A mensagem de sucesso na tela não garante que o dado foi gravado certo. Por isso, nos cenários de persistência, edição, vínculo entre produto e variações e inativação, confiro também a API e o banco de dados. Os testes automatizados fazem essa conferência no banco com consultas como esta:
 
-| Documento | Conteúdo |
+```sql
+SELECT
+    p.id_produto,
+    p.nome,
+    vp.id_variacao,
+    vp.sku,
+    vp.ativo
+FROM produto p
+INNER JOIN variacao_produto vp
+    ON vp.id_produto = p.id_produto
+WHERE vp.sku = ?;
+```
+
+O que é conferido no banco:
+
+- se o produto foi gravado depois do cadastro;
+- se o estoque mínimo mudou na edição, e se a quantidade em estoque continuou igual;
+- se as variações estão no mesmo produto (`id_produto` igual, `id_variacao` diferentes);
+- o estado (ativo ou inativo) dos registros depois de uma inativação.
+
+Os BUG-001, BUG-002 e BUG-003 foram investigados por esse caminho: pela tela não dava para ver a causa. O BUG-004 e o BUG-005 apareceram chamando a API direto, na própria resposta.
+
+### Documentação
+
+| Pasta | Conteúdo |
 | --- | --- |
-| [Regras de negócio: cadastro de produto](./docs/regras-negocio/cadastro-produto.md) | RN-001 a RN-012 |
-| [Regra: inativação de variação](./docs/regras-negocio/inativacao-variacao.md) | RN-013 |
-| [Regra: consistência de estado entre produto e variações](./docs/regras-negocio/consistencia-de-estado-entre-produto-e-variacoes.md) | RN-014 |
-| [Critérios de aceite: cadastro](./docs/criterios-aceite/cadastro-produto.md) | CA-001 a CA-012 |
-| [Critério: inativação de variação](./docs/criterios-aceite/inativacao-variacao.md) | CA-013 |
-| [Critério: consistência de estado entre produto e variações](./docs/criterios-aceite/consistencia-estado-produto-variacoes.md) | CA-014 |
+| [`docs/regras-negocio`](./docs/regras-negocio) | RN-001 a RN-014 |
+| [`docs/criterios-aceite`](./docs/criterios-aceite) | CA-001 a CA-014 |
+| [`docs/casos-de-teste`](./docs/casos-de-teste) | 9 casos funcionais documentados |
+| [`docs/bugs`](./docs/bugs) | BUG-001 a BUG-005 |
+| [`docs/evidencias`](./docs/evidencias) | 44 registros de execução |
+| [`docs/cobertura-testes.md`](./docs/cobertura-testes.md) | matriz RN → CA → CT |
+
+Cada caso de teste registra objetivo, pré-condições, massa, passos, resultado esperado, resultado obtido, status, automação relacionada e evidências. Cada defeito tem o vínculo com a regra, o critério de aceite e o caso de teste de onde veio.
 
 ---
 
@@ -257,79 +269,7 @@ mvn test -Dheadless=true        # sem abrir janela do navegador
 
 ---
 
-## 6. Validação em banco de dados
-
-A mensagem de sucesso na tela não garante que o dado foi gravado certo. Por isso os testes consultam o banco, com consultas como esta:
-
-```sql
-SELECT
-    p.id_produto,
-    p.nome,
-    vp.id_variacao,
-    vp.sku,
-    vp.ativo
-FROM produto p
-INNER JOIN variacao_produto vp
-    ON vp.id_produto = p.id_produto
-WHERE vp.sku = ?;
-```
-
-O que é conferido no banco:
-
-- se o produto foi gravado depois do cadastro;
-- se o estoque mínimo mudou na edição, e se a quantidade em estoque continuou igual;
-- se as variações estão no mesmo produto (`id_produto` igual, `id_variacao` diferentes);
-- o estado (ativo ou inativo) dos registros depois de uma inativação.
-
-Os BUG-001, BUG-002 e BUG-003 foram investigados por esse caminho: pela tela não dava para ver a causa. O BUG-004 e o BUG-005 apareceram chamando a API direto, na própria resposta.
-
----
-
-## 7. Cobertura atual
-
-| Indicador | Situação |
-| --- | ---: |
-| Regras de Negócio formalizadas | 14 |
-| Critérios de Aceite formalizados | 14 |
-| RNs com pelo menos um CT executado | 7 de 14 |
-| Cobertura por RN | 50% |
-| Casos de teste funcionais catalogados | 9 |
-| Casos funcionais automatizados | 8 |
-| Casos de teste por camada | 8 UI · 1 API |
-| Casos funcionais documentados | 9 |
-| Testes de navegação / smoke | 2 |
-| Total de testes automatizados | 10 |
-
-Os 50% contam as regras com pelo menos um caso de teste executado. Não quer dizer que todas as combinações de cada regra foram testadas.
-
-[Ver matriz de cobertura completa](./docs/cobertura-testes.md)
-
----
-
-## 8. Documentação completa
-
-```text
-docs/
-│
-├── regras-negocio/      RN-001 a RN-014
-├── criterios-aceite/    CA-001 a CA-014
-├── casos-de-teste/      9 casos funcionais documentados
-├── bugs/                BUG-001 a BUG-005
-├── evidencias/          44 registros de execução
-└── cobertura-testes.md  matriz RN → CA → CT
-```
-
-Cada caso de teste registra objetivo, pré-condições, massa, passos, resultado esperado, resultado obtido, status, automação relacionada e evidências. Cada defeito tem o vínculo com a regra, o critério de aceite e o caso de teste de onde veio.
-
-**Para começar:**
-
-- [Matriz de cobertura](./docs/cobertura-testes.md): o que existe e o que falta;
-- [CT-EST-CAD-004: cadastrar produto válido](./docs/casos-de-teste/cadastro-produto/CT-EST-CAD-004-cadastrar-produto-valido.md): um caso de teste completo;
-- [BUG-002: inativação indevida do produto](./docs/bugs/bug-002-inativacao-variacao-inativa-produto.md): uma investigação completa.
-
----
-
-## 9. Tecnologias
+## 6. Tecnologias
 
 ### QA e automação
 
@@ -369,7 +309,21 @@ varejosync-estoque-qa/
 
 ---
 
-## 10. Próximos passos
+## 7. Cobertura e próximos passos
+
+| Indicador | Situação |
+| --- | --- |
+| Regras de negócio e critérios de aceite | 14 e 14 |
+| Regras com pelo menos um caso de teste executado | 7 de 14 (50%) |
+| Casos de teste funcionais documentados | 9 (8 de interface, 1 de API) |
+| Testes automatizados | 10 (8 funcionais e 2 de navegação) |
+| Caso executado só manualmente | 1 (`CT-EST-CAD-005`, API, no Postman) |
+
+Os 50% contam as regras com pelo menos um caso de teste executado. Não quer dizer que todas as combinações de cada regra foram testadas.
+
+[Ver matriz de cobertura completa](./docs/cobertura-testes.md)
+
+### Próximos passos
 
 Próximas regras a cobrir:
 
