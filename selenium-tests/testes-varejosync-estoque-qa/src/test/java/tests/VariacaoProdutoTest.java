@@ -15,10 +15,8 @@ import static org.junit.Assert.assertTrue;
 /**
  * Testes de variação de produto (CT-EST-VAR-xxx).
  *
- * Quase todas as verificações são no banco, e isso é proposital: o vínculo
- * entre variações não aparece na tela. A interface mostra duas linhas
- * parecidas — se pertencem ao mesmo produto ou a dois produtos duplicados,
- * só o id_produto responde. Testar pela tela daria falso positivo.
+ * As verificações principais são no banco: pela tela não dá para ver se as
+ * duas variações estão no mesmo produto (mesmo id_produto).
  */
 public class VariacaoProdutoTest extends BaseTest {
 
@@ -56,15 +54,9 @@ public class VariacaoProdutoTest extends BaseTest {
                 ProdutoDAO.aguardarProdutoPorSku(variacaoP.sku())
         );
 
-        // ----------------------------------------------------------------
-        // E: cadastrar a segunda variação. Voltar ao menu limpa o formulário.
-        //
-        // Aqui não há assert de feedback, de propósito: a mensagem de sucesso
-        // é a mesma do cadastro anterior e ainda pode estar na tela, então um
-        // assert nela passaria sem provar nada. Quem prova é o banco — e por
-        // isso a espera pela gravação precisa ser explícita
-        // (aguardarProdutoPorSku), e não efeito colateral de outra coisa.
-        // ----------------------------------------------------------------
+        // E: cadastrar a segunda variação (voltar ao menu limpa o formulário)
+        // Sem assert da mensagem: a do cadastro anterior pode ainda estar na
+        // tela. Quem confirma é o banco.
         menuPage.irParaCadastroProduto();
         cadastroPage.preencherFormulario(variacaoM);
         cadastroPage.clicarCadastrar();

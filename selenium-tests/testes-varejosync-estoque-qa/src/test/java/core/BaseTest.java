@@ -14,28 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tudo que acontece antes e depois de qualquer teste: abrir o navegador e a
- * aplicação, limpar a massa criada e fechar o navegador.
- *
- * Toda classe de teste herda isso, de modo que o @Test contenha só o cenário.
+ * Classe base dos testes: abre o navegador antes de cada teste, apaga a massa
+ * criada e fecha o navegador no final.
  */
 public abstract class BaseTest {
 
     protected WebDriver driver;
     protected MenuPage menuPage;
 
-    /**
-     * Cada teste registra aqui os SKUs que criou, e o @After os apaga do
-     * banco. Sem isso a execução deixa lixo e os testes deixam de ser
-     * repetíveis.
-     */
+    // SKUs criados pelo teste. O @After apaga esses registros do banco.
     protected final List<String> skusCriadosNoTeste = new ArrayList<>();
 
-    /**
-     * Abre o navegador e a aplicação, e para por aí. Navegar até a tela do
-     * cenário é responsabilidade do @Test: assim o "Dado" fica visível no
-     * próprio teste, em vez de escondido no setup.
-     */
+    // Abre o navegador na tela inicial. Cada teste navega até a tela que usa.
     @Before
     public void abrirAplicacao() {
         WebDriverManager.chromedriver().setup();
@@ -47,16 +37,8 @@ public abstract class BaseTest {
         menuPage = new MenuPage(driver);
     }
 
-    /**
-     * Monta as opções do Chrome.
-     *
-     * O tamanho é fixo em vez de maximize() porque maximize() entrega uma
-     * área diferente em cada máquina: um teste que passa num monitor grande e
-     * falha num pequeno não achou defeito, só mudou de tela. Além disso,
-     * maximize() não é confiável em headless, onde não há janela.
-     *
-     * Se roda com ou sem janela é decisão de core.Configuracao.
-     */
+    // Janela com tamanho fixo (VariaveisEstoque) para o teste rodar igual em
+    // qualquer monitor. O modo headless vem de core.Configuracao.
     private static ChromeOptions montarOpcoesDoChrome() {
         ChromeOptions opcoes = new ChromeOptions();
 
@@ -70,8 +52,7 @@ public abstract class BaseTest {
         if (Configuracao.rodarHeadless()) {
             opcoes.addArguments("--headless=new");
 
-            // Os dois abaixo são específicos de servidor Linux em container:
-            // sem eles o Chrome costuma morrer no meio do pipeline.
+            // Opções para rodar o Chrome em servidor Linux (container).
             opcoes.addArguments("--no-sandbox");
             opcoes.addArguments("--disable-dev-shm-usage");
         }
@@ -79,14 +60,9 @@ public abstract class BaseTest {
         return opcoes;
     }
 
-    /**
-     * Limpa a massa e fecha o navegador.
-     *
-     * A conferência da limpeza é um aviso no console, e não um AssertionError,
-     * porque um erro lançado no @After marcaria como falho um teste cujo
-     * cenário passou. O driver.quit() fica no finally para que o navegador
-     * feche mesmo se a limpeza do banco quebrar.
-     */
+    // Apaga a massa e fecha o navegador. Se algum SKU continuar no banco,
+    // mostra um aviso no console em vez de falhar um teste que passou.
+    // O quit() fica no finally para fechar o navegador mesmo se der erro.
     @After
     public void limparMassaEFecharNavegador() {
         try {

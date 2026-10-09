@@ -13,14 +13,8 @@ import static org.junit.Assert.assertTrue;
 /**
  * Testes negativos de cadastro de produto (CT-EST-CAD-xxx).
  *
- * Os três se parecem entre si de propósito: duplicação entre cenários é
- * aceitável, porque cada teste é uma história completa que se lê de cima para
- * baixo. O que não se duplica é a mecânica da tela, que mora na Page — este
- * arquivo usa a mesma CadastroProdutoPage do teste positivo.
- *
- * Todo cenário negativo verifica duas coisas: que a tela mostrou a mensagem
- * de erro certa e que o produto não foi para o banco. A segunda é a que
- * importa — mensagem de erro na tela não prova que o back-end recusou.
+ * Cada teste confere a mensagem de erro na tela e se o produto ficou fora do
+ * banco. A mensagem sozinha não mostra se o back-end recusou o cadastro.
  */
 public class CadastroProdutoNegativoTest extends BaseTest {
 

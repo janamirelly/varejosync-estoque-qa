@@ -1,13 +1,11 @@
 package core;
 
 /**
- * Tudo que muda entre a máquina local e um servidor mora aqui, de modo que a
- * pergunta "o que preciso ajustar para rodar em outro lugar?" tenha um único
- * arquivo de resposta.
+ * Configurações que mudam entre a máquina local e um servidor: caminho do
+ * banco e modo headless.
  *
- * A precedência é sempre a mesma: -Dnome=valor na linha de comando vence a
- * variável de ambiente, que vence o padrão escrito aqui. Rodando local sem
- * configurar nada, cai no padrão.
+ * Ordem de leitura: -Dnome=valor na linha de comando, depois variável de
+ * ambiente, depois o padrão definido aqui.
  */
 public class Configuracao {
 
@@ -15,7 +13,7 @@ public class Configuracao {
             "C:/varejosync-estoque-qa/backend/db/estoque_qa_lab.db";
 
     /**
-     * Onde está o arquivo SQLite da aplicação.
+     * Caminho do arquivo SQLite da aplicação.
      * Em CI: mvn test -Dbanco.caminho=&lt;caminho do .db gerado pelo seed&gt;
      */
     public static String caminhoDoBanco() {
@@ -25,10 +23,8 @@ public class Configuracao {
     }
 
     /**
-     * Se o Chrome deve abrir sem janela.
-     *
-     * Não precisa ser configurado no GitHub Actions: ele define CI=true
-     * sozinho. Localmente CI não existe, então o padrão é com janela.
+     * Se o Chrome abre sem janela. Sem configuração, segue a variável CI
+     * (o GitHub Actions define CI=true). Na máquina local, abre com janela.
      * Para forçar: mvn test -Dheadless=true
      */
     public static boolean rodarHeadless() {

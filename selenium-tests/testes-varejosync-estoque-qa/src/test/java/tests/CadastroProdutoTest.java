@@ -11,9 +11,6 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Testes de cadastro de produto (CT-EST-CAD-xxx).
- *
- * Aqui só existe @Test: nenhum método auxiliar, nenhuma espera, nenhum
- * findElement. O que se lê é o que executa, de cima para baixo.
  */
 public class CadastroProdutoTest extends BaseTest {
 

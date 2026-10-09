@@ -16,9 +16,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Testes de exclusão de variação (CT-EST-EXC-xxx).
  *
- * O tema é efeito colateral: a operação precisa mudar exatamente o que foi
- * pedido e nada além. Por isso cada teste verifica tanto o que deve mudar
- * quanto o que não pode mudar.
+ * Cada teste confere o que deve mudar e o que deve continuar igual.
  */
 public class ExclusaoProdutoTest extends BaseTest {
 
@@ -31,10 +29,7 @@ public class ExclusaoProdutoTest extends BaseTest {
         CadastroProdutoPage cadastroPage = new CadastroProdutoPage(driver);
         ConsultarEstoquePage estoquePage = new ConsultarEstoquePage(driver);
 
-        // ================================================================
-        // Dado: um produto com duas variações ativas.
-        // Toda esta seção é pré-condição.
-        // ================================================================
+        // Dado: um produto com duas variações ativas
         ParDeVariacoes variacoes = MassaProduto.duasVariacoesDoMesmoProduto();
 
         Produto variacaoP = variacoes.tamanhoP();
@@ -67,11 +62,8 @@ public class ExclusaoProdutoTest extends BaseTest {
                 ProdutoDAO.obterIdProdutoPorSku(variacaoM.sku())
         );
 
-        // ----------------------------------------------------------------
-        // Pré-condição: tudo ativo antes da exclusão. Sem estes três asserts,
-        // os do final não provam nada — "a variação P continua ativa" só tem
-        // sentido se ela estava ativa antes.
-        // ----------------------------------------------------------------
+        // Pré-condição: produto e variações ativos antes da exclusão
+        // (para os asserts do final compararem com o estado de antes)
         assertTrue(
                 "Pré-condição falhou: o produto de origem deveria estar ativo.",
                 ProdutoDAO.produtoEstaAtivoPorSku(variacaoM.sku())
@@ -87,9 +79,7 @@ public class ExclusaoProdutoTest extends BaseTest {
                 ProdutoDAO.variacaoEstaAtivaPorSku(variacaoM.sku())
         );
 
-        // ================================================================
         // Quando: excluir SOMENTE a variação M
-        // ================================================================
         menuPage.irParaConsultarEstoque();
         estoquePage.buscarPorSku(variacaoM.sku());
 
@@ -101,9 +91,7 @@ public class ExclusaoProdutoTest extends BaseTest {
         estoquePage.clicarExcluir();
         estoquePage.confirmarExclusao();
 
-        // ================================================================
         // Então: o sistema deve exibir a mensagem correta
-        // ================================================================
         String feedback = estoquePage.lerFeedback(MSG_VARIACAO_EXCLUIDA);
 
         assertTrue(
@@ -152,14 +140,9 @@ public class ExclusaoProdutoTest extends BaseTest {
         CadastroProdutoPage cadastroPage = new CadastroProdutoPage(driver);
         ConsultarEstoquePage estoquePage = new ConsultarEstoquePage(driver);
 
-        // ================================================================
-        // Dado: um produto com uma única variação ativa.
-        //
-        // Complemento do CT-EST-EXC-001: lá o produto tinha duas variações e
-        // inativar uma não podia derrubá-lo; aqui só existe uma, e inativá-la
-        // deve derrubá-lo. O estado do produto é consequência do estado das
-        // variações (RN-014), visto pelos dois lados.
-        // ================================================================
+        // Dado: um produto com uma única variação ativa
+        // (no CT-EST-EXC-001 o produto tem duas variações e continua ativo;
+        // aqui, sem variação ativa, ele deve ficar inativo pela RN-014)
         Produto produto = MassaProduto.valido();
         skusCriadosNoTeste.add(produto.sku());
 
@@ -181,9 +164,7 @@ public class ExclusaoProdutoTest extends BaseTest {
                 ProdutoDAO.variacaoEstaAtivaPorSku(produto.sku())
         );
 
-        // ================================================================
         // Quando: excluir a única variação existente
-        // ================================================================
         menuPage.irParaConsultarEstoque();
         estoquePage.buscarPorSku(produto.sku());
 
@@ -195,9 +176,7 @@ public class ExclusaoProdutoTest extends BaseTest {
         estoquePage.clicarExcluir();
         estoquePage.confirmarExclusao();
 
-        // ================================================================
         // Então: o sistema deve exibir a mensagem correta
-        // ================================================================
         String feedback = estoquePage.lerFeedback(MSG_VARIACAO_EXCLUIDA);
 
         assertTrue(
@@ -217,12 +196,8 @@ public class ExclusaoProdutoTest extends BaseTest {
                 ProdutoDAO.produtoEstaAtivoPorSku(produto.sku())
         );
 
-        // ----------------------------------------------------------------
-        // E: a invariante da RN-014 deve continuar valendo em toda a base —
-        // nenhuma variação ativa vinculada a produto inativo. Sem este assert
-        // o defeito pode voltar sem que ninguém perceba, até alguém procurar
-        // uma SKU que sumiu da tela.
-        // ----------------------------------------------------------------
+        // E: não deve existir, em toda a base, variação ativa ligada a
+        // produto inativo (RN-014)
         assertEquals(
                 "Existem variações ativas vinculadas a produtos inativos (estado proibido pela RN-014).",
                 0,

@@ -11,19 +11,15 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 /**
- * O que toda página do sistema sabe fazer: esperar, digitar, clicar e ler o
- * feedback. Concentrar isso aqui mantém a espera com um único tempo-limite e
- * um único comportamento em toda a suíte.
- *
- * É abstract porque não representa nenhuma tela real — só existe para ser
- * herdada.
+ * Métodos usados por todas as Pages: esperar, digitar, clicar e ler a
+ * mensagem de feedback. A espera é de até 10 segundos.
  */
 public abstract class BasePage {
 
     protected final WebDriver driver;
     protected final WebDriverWait wait;
 
-    /** O feedback é o mesmo elemento em todas as telas, por isso mora aqui. */
+    // Elemento da mensagem de feedback, o mesmo em todas as telas.
     private static final By TEXTO_FEEDBACK = By.id("feedbackText");
 
     public BasePage(WebDriver driver) {
@@ -32,10 +28,8 @@ public abstract class BasePage {
     }
 
     /**
-     * Espera o campo ficar visível, limpa e digita.
-     *
-     * O clear() é sempre feito: sem ele, um campo com valor padrão concatena
-     * em vez de substituir, e o teste passa a depender de qual tela veio antes.
+     * Espera o campo ficar visível, limpa e digita. O clear() evita juntar o
+     * texto novo com o valor que já estava no campo.
      */
     protected void digitar(By campo, String texto) {
         WebElement elemento = wait.until(
@@ -60,17 +54,11 @@ public abstract class BasePage {
     }
 
     /**
-     * Espera o feedback exibir o texto esperado e devolve o que está na tela.
+     * Espera a mensagem esperada aparecer e devolve o texto que está na tela.
      *
-     * Recebe o texto esperado porque o feedback é um elemento único,
-     * reaproveitado por toda ação do sistema: num teste de dois passos, ler
-     * sem saber o que esperar pode devolver a mensagem do passo anterior, que
-     * ainda não sumiu. Esperar pelo texto certo elimina essa corrida.
-     *
-     * O catch vazio é proposital: em vez de estourar TimeoutException, o
-     * método devolve o que estiver na tela, para que o assert do teste possa
-     * reportar "esperava X, mas veio Y". A decisão continua sendo do @Test —
-     * esta Page apenas reporta.
+     * Recebe o texto esperado porque a mensagem do passo anterior pode ainda
+     * estar na tela. Se o tempo acabar, devolve o texto atual em vez de lançar
+     * exceção, e o assert do teste mostra o que veio.
      */
     public String lerFeedback(String textoEsperado) {
         try {
@@ -78,14 +66,13 @@ public abstract class BasePage {
                     TEXTO_FEEDBACK, textoEsperado
             ));
         } catch (TimeoutException erro) {
-            // Silencioso de propósito: o assert do teste é quem reporta.
+            // O assert do teste mostra o texto que veio.
         }
 
         return driver.findElement(TEXTO_FEEDBACK).getText();
     }
 
-    // URL e título não pertencem a uma tela específica: toda página tem os
-    // dois. Continuam apenas reportando — quem compara é o @Test.
+    // URL e título da página atual.
 
     public String urlAtual() {
         return driver.getCurrentUrl();

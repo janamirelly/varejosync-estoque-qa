@@ -13,9 +13,6 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Testes de edição de produto (CT-EST-EDT-xxx).
- *
- * Ficam num arquivo próprio porque editar não é cadastrar. O nome da classe
- * acompanha o prefixo do caso de teste, então achar o código pelo ID é direto.
  */
 public class EdicaoProdutoTest extends BaseTest {
 
@@ -28,13 +25,7 @@ public class EdicaoProdutoTest extends BaseTest {
         CadastroProdutoPage cadastroPage = new CadastroProdutoPage(driver);
         ConsultarEstoquePage estoquePage = new ConsultarEstoquePage(driver);
 
-        // ----------------------------------------------------------------
-        // Dado: que exista um produto cadastrado.
-        //
-        // A pré-condição fica visível no teste, e não escondida num auxiliar:
-        // se ela falhar, vê-se em qual linha parou. Usa cadastrar() porque
-        // cadastrar não é o que está sendo testado aqui.
-        // ----------------------------------------------------------------
+        // Dado: que exista um produto cadastrado
         Produto produto = MassaProduto.valido();
         skusCriadosNoTeste.add(produto.sku());
 
@@ -82,13 +73,8 @@ public class EdicaoProdutoTest extends BaseTest {
                 ProdutoDAO.existeProdutoComEstoqueMinimo(produto.sku(), novoEstoqueMinimo)
         );
 
-        // ----------------------------------------------------------------
-        // E: a quantidade em estoque deve continuar igual.
-        //
-        // É o assert que dá valor ao teste: verificar que o estoque mínimo
-        // mudou prova apenas que a tela salvou algo; verificar que a
-        // quantidade não mudou prova que a edição não teve efeito colateral.
-        // ----------------------------------------------------------------
+        // E: a quantidade em estoque deve continuar igual
+        // (editar o estoque mínimo não pode alterar outro campo)
         int quantidadeDepois = ProdutoDAO.obterQuantidadePorSku(produto.sku());
 
         assertEquals(

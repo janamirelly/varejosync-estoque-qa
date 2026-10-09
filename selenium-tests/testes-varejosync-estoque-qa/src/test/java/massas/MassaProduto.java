@@ -3,20 +3,13 @@ package massas;
 import net.datafaker.Faker;
 
 /**
- * Fábrica de massa de teste. Cada método devolve um cenário pronto, de modo
- * que o teste não monte dados na mão: ler MassaProduto.semNome() já diz qual
- * cenário está em jogo.
- *
- * O Faker é o gerador e vive uma vez só; os dados não, para que cada chamada
- * produza um SKU novo e os testes sejam repetíveis.
+ * Massas de produto usadas nos testes. Cada chamada gera um SKU novo.
  */
 public class MassaProduto {
 
     private static final Faker faker = new Faker();
 
-    // ------------------------------------------------------------------
     // Cenário positivo
-    // ------------------------------------------------------------------
 
     /** Produto com todos os campos válidos. SKU único a cada chamada. */
     public static Produto valido() {
@@ -31,13 +24,8 @@ public class MassaProduto {
         );
     }
 
-    // ------------------------------------------------------------------
-    // Cenários negativos: todos partem de valido() e trocam UM campo.
-    //
-    // Massa negativa montada do zero não prova nada: se o cadastro for
-    // recusado, não se sabe qual campo causou a recusa. Partindo do válido,
-    // existe uma única diferença possível — a que está sendo testada.
-    // ------------------------------------------------------------------
+    // Cenários negativos: partem de valido() e trocam só um campo, para
+    // saber qual campo causou a recusa.
 
     /** Nome vazio. Todos os outros campos válidos. */
     public static Produto semNome() {
@@ -54,9 +42,7 @@ public class MassaProduto {
         return valido().comSku("");
     }
 
-    // ------------------------------------------------------------------
     // Valores usados nos cenários de edição
-    // ------------------------------------------------------------------
 
     /**
      * Novo estoque mínimo para os cenários de edição. Diferente do valor de
@@ -67,18 +53,12 @@ public class MassaProduto {
         return "12";
     }
 
-    // ------------------------------------------------------------------
     // Cenários com variações
-    // ------------------------------------------------------------------
 
     /**
-     * Duas variações (P e M) do mesmo produto.
-     *
-     * A regra do sistema: nome e cor iguais significam o mesmo produto;
-     * tamanho e sku diferentes significam variações distintas dele.
-     *
-     * O sufixo de timestamp garante que cada execução crie um produto novo —
-     * sem ele o teste falharia por massa suja, não por defeito no sistema.
+     * Duas variações (P e M) do mesmo produto: mesmo nome e cor, tamanho e
+     * SKU diferentes. O sufixo com timestamp cria um produto novo a cada
+     * execução.
      */
     public static ParDeVariacoes duasVariacoesDoMesmoProduto() {
         String sufixo = String.valueOf(System.currentTimeMillis());

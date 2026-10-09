@@ -6,8 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 /**
- * Dashboard: a tela inicial do módulo de estoque. É a menor Page do projeto —
- * o tamanho de uma Page acompanha o da tela que ela representa.
+ * Dashboard: tela inicial do módulo de estoque.
  */
 public class DashboardPage extends BasePage {
 
@@ -18,7 +17,7 @@ public class DashboardPage extends BasePage {
         super(driver);
     }
 
-    /** Espera o dashboard aparecer e devolve se conseguiu. Reporta, não julga. */
+    /** Espera o dashboard aparecer. Devolve false se ele não aparecer. */
     public boolean estaVisivel() {
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(PG_DASHBOARD_ATIVA));

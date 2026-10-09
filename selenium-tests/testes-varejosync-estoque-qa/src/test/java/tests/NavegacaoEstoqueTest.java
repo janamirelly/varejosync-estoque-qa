@@ -12,12 +12,8 @@ import static org.junit.Assert.assertTrue;
 /**
  * Testes de navegação do módulo de estoque (CT-EST-NAV-xxx).
  *
- * São os mais baratos da suíte e os primeiros que devem rodar: se o menu ou a
- * tela inicial quebrarem, todos os outros testes falham juntos. Estes dois
- * dizem em segundos que a causa é a navegação, e não a regra de negócio que o
- * teste maior tentava validar.
- *
- * Nenhum deles toca o banco — não há nada a persistir aqui.
+ * Se o menu ou a tela inicial quebrarem, os outros testes também falham.
+ * Estes dois mostram se o problema está na navegação. Não consultam o banco.
  */
 public class NavegacaoEstoqueTest extends BaseTest {
 
@@ -63,14 +59,7 @@ public class NavegacaoEstoqueTest extends BaseTest {
         // Quando: clicar em Cadastrar Produto no menu
         menuPage.irParaCadastroProduto();
 
-        // ----------------------------------------------------------------
-        // Então: a página de cadastro deve ficar ativa.
-        //
-        // O irParaCadastroProduto() já espera esta tela, de modo que uma falha
-        // de navegação quebra a linha acima e não este assert. Ele fica aqui
-        // porque deixa o "Então" do cenário escrito e porque este é o único
-        // teste cujo objetivo é o menu em si.
-        // ----------------------------------------------------------------
+        // Então: a página de cadastro deve ficar ativa
         assertTrue(
                 "A tela de cadastro de produto não ficou ativa após clicar no menu.",
                 cadastroPage.estaAtiva()

@@ -5,8 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 /**
- * Tela de Consultar Estoque: busca, leitura da tabela e os botões de editar
- * e excluir. Como nas demais Pages, nenhum assert aqui.
+ * Tela de consulta de estoque: busca, tabela e botões de editar e excluir.
  */
 public class ConsultarEstoquePage extends BasePage {
 
@@ -26,10 +25,7 @@ public class ConsultarEstoquePage extends BasePage {
         clicar(BOTAO_BUSCAR);
     }
 
-    /**
-     * Devolve o texto inteiro da tabela. A mesma leitura serve para "apareceu"
-     * e para "não apareceu" — quem decide é o @Test.
-     */
+    /** Devolve o texto da tabela de estoque. */
     public String lerTabela() {
         return wait.until(
                 ExpectedConditions.visibilityOfElementLocated(TABELA)
@@ -44,10 +40,7 @@ public class ConsultarEstoquePage extends BasePage {
         clicar(BOTAO_EXCLUIR);
     }
 
-    /**
-     * Aceita o alert nativo do navegador. Alert nativo não é elemento da
-     * página e não pode ser localizado por By — daí o tratamento diferente.
-     */
+    /** Aceita o alert de confirmação do navegador. */
     public void confirmarExclusao() {
         wait.until(ExpectedConditions.alertIsPresent()).accept();
     }

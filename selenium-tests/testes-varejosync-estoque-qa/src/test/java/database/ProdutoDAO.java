@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ProdutoDAO {
 
-    /** O caminho vem de core.Configuracao — nunca fixo no código. */
+    // Caminho do banco definido em core.Configuracao.
     private static final String CAMINHO_BANCO = Configuracao.caminhoDoBanco();
 
     private static final String URL_BANCO =
@@ -67,17 +67,9 @@ public class ProdutoDAO {
     }
 
     /**
-     * Espera até o produto aparecer no banco, por no máximo 10 segundos.
-     *
-     * A tela responde antes de o banco terminar de gravar, então consultar no
-     * instante seguinte ao clique é uma corrida — às vezes o teste ganha, às
-     * vezes perde.
-     *
-     * Não é um Thread.sleep fixo: o método retorna no instante em que
-     * encontra o produto. Os 300ms são o intervalo entre consultas e os 10
-     * segundos o limite para não travar quando o produto não foi criado.
-     *
-     * Devolve true ou false; quem reporta a falha é o assert do teste.
+     * Espera o produto aparecer no banco: consulta a cada 300 ms e para assim
+     * que encontra, ou depois de 10 segundos. A tela mostra a mensagem antes
+     * de o banco terminar de gravar.
      */
     public static boolean aguardarProdutoPorSku(String sku) {
         long limite = System.currentTimeMillis() + 10_000;
@@ -280,15 +272,9 @@ public class ProdutoDAO {
         );
     }
     /**
-     * Conta as variações ativas vinculadas a produtos inativos em toda a base.
-     *
-     * É a invariante da RN-014 escrita como consulta: o resultado tem de ser
-     * sempre 0. Uma variação ativa presa a um produto inativo continua no
-     * banco com SKU e saldo, mas some das telas — o registro existe, o usuário
-     * não o encontra e o sistema não avisa.
-     *
-     * A verificação é global, e não escopada ao produto do teste, porque a
-     * regra também é global.
+     * Conta as variações ativas ligadas a produto inativo em toda a base.
+     * Pela RN-014 o resultado tem que ser 0: uma variação assim continua no
+     * banco, mas some das telas.
      */
     public static int contarVariacoesAtivasComProdutoInativo() {
         String sql = """

@@ -5,10 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 /**
- * Menu lateral: o único lugar do projeto que sabe navegar entre as telas.
- *
- * Cada método espera a tela de destino ficar ativa, de modo que o teste possa
- * seguir para a linha seguinte sem escrever espera nenhuma.
+ * Menu lateral. Cada método clica no menu e espera a tela de destino abrir.
  */
 public class MenuPage extends BasePage {
 
