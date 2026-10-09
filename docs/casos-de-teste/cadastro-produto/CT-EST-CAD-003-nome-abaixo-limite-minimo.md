@@ -10,6 +10,7 @@
 - **Regra relacionada:** RN-001 — Nome do produto deve ser obrigatório e válido
 - **Critério de aceite relacionado:** CA-001
 - **Ambiente:** Desenvolvimento local
+- **Automação:** Sim
 - **Status:** Passou
 - **Data da execução:** 07/08/2026
 - **Defeito relacionado:** BUG-005 — Corrigido e retestado
@@ -72,3 +73,9 @@ Verificar se o sistema impede o cadastro de um produto quando o campo **Nome do 
 
 - **EVD-CT-EST-CAD-003-04 — Pós-condição:** consulta no banco após a execução retornando 0 registros para o SKU `CAM-VO-P`.
   [Ver evidência](../../evidencias/ct-est-cad-003/04-pos-condicao-banco.png)
+
+## Automação relacionada
+
+- **Classe:** `CadastroProdutoNegativoTest`
+- **Método:** `CT_EST_CAD_003_bloquearCadastroComNomeAbaixoLimiteMinimo()`
+- **Status da última execução:** Passou

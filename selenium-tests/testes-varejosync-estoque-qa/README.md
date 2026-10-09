@@ -2,7 +2,7 @@
 
 Testes automatizados de interface do VarejoSync, em **Java + Selenium WebDriver + JUnit**, com validação de persistência direto no banco **SQLite**.
 
-São **9 casos automatizados**: 7 funcionais e 2 de navegação. A documentação de cada caso (regra de negócio, critério de aceite, passos e evidência) fica em [`docs/casos-de-teste`](../../docs/casos-de-teste).
+São **10 casos automatizados**: 8 funcionais e 2 de navegação. A documentação de cada caso (regra de negócio, critério de aceite, passos e evidência) fica em [`docs/casos-de-teste`](../../docs/casos-de-teste).
 
 ← [Voltar ao README do projeto](../../README.md)
 
@@ -78,7 +78,7 @@ src/test/java/
     ├── CadastroProdutoTest          CT-EST-CAD-004
     ├── CadastroProdutoNegativoTest  CT-EST-CAD-001, 002, 003
     ├── EdicaoProdutoTest            CT-EST-EDT-001
-    ├── ExclusaoProdutoTest          CT-EST-EXC-001
+    ├── ExclusaoProdutoTest          CT-EST-EXC-001, 002
     ├── VariacaoProdutoTest          CT-EST-VAR-001
     └── NavegacaoEstoqueTest         CT-EST-NAV-001, 002
 ```

@@ -130,3 +130,9 @@ Após os cadastros:
 
 - **EVD-CT-EST-VAR-001-01 — Vínculo produto/variações no banco:** consulta confirmando duas variações distintas, com SKUs, tamanhos e `id_variacao` próprios, vinculadas ao mesmo `id_produto = 225`.
   [Ver evidência](../../evidencias/ct-est-var-001/001-vinculo-variacoes-banco.png)
+
+## Automação relacionada
+
+- **Classe:** `VariacaoProdutoTest`
+- **Método:** `CT_EST_VAR_001_manterVariacoesDoMesmoProdutoVinculadas()`
+- **Status da última execução:** Passou

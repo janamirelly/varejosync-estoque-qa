@@ -28,11 +28,11 @@ Verificar se o sistema permite alterar o estoque mínimo de uma variação exist
 
 ## Massa de teste
 
-A massa de teste do produto é gerada pelos dados válidos definidos em `MassaCadastroProduto`.
+A massa de teste do produto é gerada pelos dados válidos definidos em `MassaProduto.valido()`.
 
 O novo estoque mínimo utilizado na automação é obtido por:
 
-`MassaCadastroProduto.novoEstoqueMinimoValidoEdicao()`.
+`MassaProduto.novoEstoqueMinimo()`.
 
 ## Passos
 
@@ -81,7 +81,7 @@ O novo estoque mínimo utilizado na automação é obtido por:
 * **EVD-CT-EST-EDT-001-02 — Novo estoque mínimo informado:** tela de edição da variação CAM-AZUL-M com o estoque mínimo alterado de 10 para 12, antes de salvar a alteração.
 [Ver evidência](../../evidencias/ct-est-edt-001/02-novo-estoque-minimo.png)
 
-* **EVD-CT-EST-EDT-001-03 — Confirmação da alteração:** sistema exibindo a mensagem Alteração salva com sucesso. após a operação.
+* **EVD-CT-EST-EDT-001-03 — Confirmação da alteração:** sistema exibindo a mensagem `Alteração salva com sucesso` após a operação.
 [Ver evidência](../../evidencias/ct-est-edt-001/03-mensagem-alteracao-sucesso.png)
 
 * **EVD-CT-EST-EDT-001-04 — Validação na consulta de estoque:** busca pela SKU CAM-AZUL-M após a edição, apresentando estoque mínimo igual a 12.
@@ -93,7 +93,7 @@ O novo estoque mínimo utilizado na automação é obtido por:
 
 ## Automação relacionada
 
-* **Classe:** `CadastroProdutoTest`
+* **Classe:** `EdicaoProdutoTest`
 * **Método:** `CT_EST_EDT_001_alterarEstoqueMinimoDaVariacao()`
 * **Status da última execução:** Passou
 
